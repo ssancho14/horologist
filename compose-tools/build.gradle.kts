@@ -19,33 +19,29 @@ plugins {
     id("org.jetbrains.dokka")
     id("me.tylerbwong.gradle.metalava")
     kotlin("android")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 25
+        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
         buildConfig = false
-        compose = true
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
         freeCompilerArgs = freeCompilerArgs + "-opt-in=com.google.android.horologist.annotations.ExperimentalHorologistApi"
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     packaging {
@@ -75,8 +71,8 @@ android {
 project.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     // Workaround for https://youtrack.jetbrains.com/issue/KT-37652
     if (!this.name.endsWith("TestKotlin") && !this.name.startsWith("compileDebug")) {
-        this.kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
+        compilerOptions {
+            freeCompilerArgs.add("-Xexplicit-api=strict")
         }
     }
 }
@@ -90,7 +86,6 @@ metalava {
 dependencies {
     api(projects.annotations)
 
-    implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
     implementation(projects.tiles)
 
@@ -105,9 +100,11 @@ dependencies {
     implementation(libs.androidx.wear.tooling.preview)
     implementation(libs.kotlinx.coroutines.guava)
     api(libs.wearcompose.tooling)
+    implementation(libs.androidx.wear.tiles.tooling.preview)
 
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.wear.tiles.tooling)
 }
 
 apply(plugin = "com.vanniktech.maven.publish")

@@ -23,23 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.google.android.horologist.images.base.paintable.DrawableResPaintable
-import com.google.android.horologist.images.coil.FakeImageLoader
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import org.junit.Test
 
-class SignedInConfirmationDialogTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        screenTimeText = { }
-    },
-) {
+class SignedInConfirmationDialogTest : WearLegacyScreenTest() {
 
     @Test
     fun signedInConfirmationDialog() {
-        screenshotTestRule.setContent(
-            takeScreenshot = true,
-            fakeImageLoader = FakeImageLoader.Resources,
-        ) {
+        runTest {
             Box(
                 modifier = Modifier.background(Color.Black),
                 contentAlignment = Alignment.Center,
@@ -56,10 +47,7 @@ class SignedInConfirmationDialogTest : ScreenshotBaseTest(
 
     @Test
     fun signedInConfirmationDialogNoName() {
-        screenshotTestRule.setContent(
-            takeScreenshot = true,
-            fakeImageLoader = FakeImageLoader.Resources,
-        ) {
+        runTest {
             SignedInConfirmationDialog(
                 onDismissOrTimeout = {},
                 email = "maggie@example.com",
@@ -70,10 +58,7 @@ class SignedInConfirmationDialogTest : ScreenshotBaseTest(
 
     @Test
     fun signedInConfirmationDialogEmptyName() {
-        screenshotTestRule.setContent(
-            takeScreenshot = true,
-            fakeImageLoader = FakeImageLoader.Resources,
-        ) {
+        runTest {
             SignedInConfirmationDialog(
                 onDismissOrTimeout = {},
                 name = "",
@@ -85,7 +70,7 @@ class SignedInConfirmationDialogTest : ScreenshotBaseTest(
 
     @Test
     fun signedInConfirmationDialogNoNameNoAvatar() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignedInConfirmationDialog(
                 onDismissOrTimeout = {},
                 email = "maggie@example.com",
@@ -95,10 +80,7 @@ class SignedInConfirmationDialogTest : ScreenshotBaseTest(
 
     @Test
     fun signedInConfirmationDialogNoEmail() {
-        screenshotTestRule.setContent(
-            takeScreenshot = true,
-            fakeImageLoader = FakeImageLoader.Resources,
-        ) {
+        runTest {
             SignedInConfirmationDialog(
                 onDismissOrTimeout = {},
                 name = "Maggie",
@@ -109,17 +91,14 @@ class SignedInConfirmationDialogTest : ScreenshotBaseTest(
 
     @Test
     fun signedInConfirmationDialogNoInformation() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignedInConfirmationDialog(onDismissOrTimeout = {})
         }
     }
 
     @Test
     fun signedInConfirmationDialogTruncation() {
-        screenshotTestRule.setContent(
-            takeScreenshot = true,
-            fakeImageLoader = FakeImageLoader.Resources,
-        ) {
+        runTest {
             SignedInConfirmationDialog(
                 onDismissOrTimeout = {},
                 name = "Wolfeschlegelsteinhausenbergerdorff",

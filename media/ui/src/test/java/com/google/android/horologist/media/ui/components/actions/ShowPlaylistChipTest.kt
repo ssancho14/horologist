@@ -18,14 +18,14 @@ package com.google.android.horologist.media.ui.components.actions
 
 import com.google.android.horologist.images.base.paintable.DrawableResPaintable
 import com.google.android.horologist.logo.R
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
+import com.google.android.horologist.screenshots.rng.WearLegacyComponentTest
 import org.junit.Test
 
-class ShowPlaylistChipTest : ScreenshotBaseTest() {
+class ShowPlaylistChipTest : WearLegacyComponentTest() {
 
     @Test
     fun givenArtwork_thenDisplaysArtwork() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ShowPlaylistChip(
                 artworkPaintable = DrawableResPaintable(R.drawable.horologist_logo),
                 name = "Playlists",
@@ -36,7 +36,7 @@ class ShowPlaylistChipTest : ScreenshotBaseTest() {
 
     @Test
     fun givenNOArtwork_thenDoesNOTDisplayArtwork() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ShowPlaylistChip(
                 artworkPaintable = null,
                 name = "Playlists",
@@ -47,7 +47,7 @@ class ShowPlaylistChipTest : ScreenshotBaseTest() {
 
     @Test
     fun givenNOName_thenDoesDisplayArtwork() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ShowPlaylistChip(
                 artworkPaintable = DrawableResPaintable(R.drawable.horologist_logo),
                 name = null,
@@ -58,7 +58,7 @@ class ShowPlaylistChipTest : ScreenshotBaseTest() {
 
     @Test
     fun givenVeryLongTitle_thenEllipsizeAt2ndLine() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ShowPlaylistChip(
                 artworkPaintable = DrawableResPaintable(R.drawable.horologist_logo),
                 name = "Very very very very very very very very very very very very very very very very very very very long title",

@@ -19,17 +19,16 @@ package com.google.android.horologist.compose.material
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsBike
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.wear.compose.material.ButtonDefaults
-import com.google.accompanist.testharness.TestHarness
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
+import com.google.android.horologist.screenshots.rng.WearLegacyComponentTest
 import org.junit.Test
+import org.robolectric.annotation.Config
 
-internal class ButtonTest : ScreenshotBaseTest() {
+internal class ButtonTest : WearLegacyComponentTest() {
 
     @Test
     fun default() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
@@ -40,7 +39,7 @@ internal class ButtonTest : ScreenshotBaseTest() {
 
     @Test
     fun disabled() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
@@ -52,7 +51,7 @@ internal class ButtonTest : ScreenshotBaseTest() {
 
     @Test
     fun large() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
@@ -64,7 +63,7 @@ internal class ButtonTest : ScreenshotBaseTest() {
 
     @Test
     fun small() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
@@ -76,7 +75,7 @@ internal class ButtonTest : ScreenshotBaseTest() {
 
     @Test
     fun customSize() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
@@ -91,7 +90,7 @@ internal class ButtonTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryButtonColors() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
@@ -103,7 +102,7 @@ internal class ButtonTest : ScreenshotBaseTest() {
 
     @Test
     fun withIconButtonColors() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
@@ -115,7 +114,7 @@ internal class ButtonTest : ScreenshotBaseTest() {
 
     @Test
     fun usingDrawableResAsIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 id = android.R.drawable.ic_media_play,
                 contentDescription = "contentDescription",
@@ -125,21 +124,20 @@ internal class ButtonTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun usingDrawableResAsIconRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Button(
-                    id = android.R.drawable.ic_media_play,
-                    contentDescription = "contentDescription",
-                    onClick = { },
-                )
-            }
+        runComponentTest {
+            Button(
+                id = android.R.drawable.ic_media_play,
+                contentDescription = "contentDescription",
+                onClick = { },
+            )
         }
     }
 
     @Test
     fun usingDrawableResAsIconMirrored() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 id = android.R.drawable.ic_media_play,
                 contentDescription = "contentDescription",
@@ -150,35 +148,33 @@ internal class ButtonTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun usingDrawableResAsIconMirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Button(
-                    id = android.R.drawable.ic_media_play,
-                    contentDescription = "contentDescription",
-                    onClick = { },
-                    iconRtlMode = IconRtlMode.Mirrored,
-                )
-            }
+        runComponentTest {
+            Button(
+                id = android.R.drawable.ic_media_play,
+                contentDescription = "contentDescription",
+                onClick = { },
+                iconRtlMode = IconRtlMode.Mirrored,
+            )
         }
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun defaultRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Button(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "contentDescription",
-                    onClick = { },
-                )
-            }
+        runComponentTest {
+            Button(
+                imageVector = Icons.Default.Check,
+                contentDescription = "contentDescription",
+                onClick = { },
+            )
         }
     }
 
     @Test
     fun mirrored() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Button(
                 imageVector = Icons.AutoMirrored.Default.DirectionsBike,
                 contentDescription = "contentDescription",
@@ -189,16 +185,15 @@ internal class ButtonTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun mirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Button(
-                    imageVector = Icons.AutoMirrored.Default.DirectionsBike,
-                    contentDescription = "contentDescription",
-                    onClick = { },
-                    iconRtlMode = IconRtlMode.Mirrored,
-                )
-            }
+        runComponentTest {
+            Button(
+                imageVector = Icons.AutoMirrored.Default.DirectionsBike,
+                contentDescription = "contentDescription",
+                onClick = { },
+                iconRtlMode = IconRtlMode.Mirrored,
+            )
         }
     }
 }

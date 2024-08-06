@@ -24,17 +24,17 @@ android {
     compileSdk = 34
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
     }
 
     defaultConfig {
         minSdk = 30
-        targetSdk = 33
+        targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["androidx.benchmark.fullTracing.enable"] = "true"
@@ -63,10 +63,10 @@ dependencies {
     implementation(libs.androidx.benchmark.macro.junit4)
     implementation(libs.androidx.benchmark.junit4)
     implementation(libs.androidx.test.ext.ktx)
-    implementation(libs.espresso.core)
+    implementation(libs.androidx.test.espressocore)
     implementation(libs.androidx.test.uiautomator)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(project.findProject(":media-lib-session") ?: libs.androidx.media3.session)
+    implementation(libs.androidx.media3.session)
 }
 
 androidComponents {

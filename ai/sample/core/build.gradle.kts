@@ -26,14 +26,14 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -41,7 +41,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
         freeCompilerArgs = freeCompilerArgs +
             listOf(
                 "-opt-in=kotlin.RequiresOptIn",
@@ -74,14 +74,14 @@ android {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.25.2"
+        artifact = "com.google.protobuf:protoc:4.27.3"
     }
     plugins {
         create("javalite") {
             artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
         }
         create("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.61.0"
+            artifact = "io.grpc:protoc-gen-grpc-java:1.65.1"
         }
         create("grpckt") {
             artifact = "io.grpc:protoc-gen-grpc-kotlin:1.3.0:jdk8@jar"
@@ -139,10 +139,10 @@ dependencies {
     testImplementation(libs.robolectric)
 
     androidTestImplementation(libs.compose.ui.test.junit4)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.espressocore)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.truth)
 }
 
-tasks.maybeCreate("prepareKotlinIdeaImport")
-    .dependsOn("generateDebugProto")
+// tasks.maybeCreate("prepareKotlinIdeaImport")
+//    .dependsOn("generateDebugProto")

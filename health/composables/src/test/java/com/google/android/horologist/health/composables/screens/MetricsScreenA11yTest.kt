@@ -16,54 +16,48 @@
 
 package com.google.android.horologist.health.composables.screens
 
-import androidx.compose.ui.unit.LayoutDirection
-import com.google.accompanist.testharness.TestHarness
+import androidx.compose.ui.res.stringResource
+import com.google.android.horologist.health.composables.R
 import com.google.android.horologist.health.composables.model.MetricUiModel
 import com.google.android.horologist.health.composables.theme.HR_MAXIMUM
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyA11yTest
 import org.junit.Test
+import org.robolectric.annotation.Config
 
-class MetricsScreenA11yTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        enableA11y = true
-        screenTimeText = {}
-    },
-) {
+class MetricsScreenA11yTest : WearLegacyA11yTest() {
 
     @Test
     fun metricsScreenTwoMetrics() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runScreenTest {
             MetricsScreen(
                 firstMetric = MetricUiModel(
                     text = "198",
-                    bottomRightText = "Peak",
+                    bottomRightText = stringResource(R.string.horologist_peak),
                     color = HR_MAXIMUM,
                 ),
                 secondMetric = MetricUiModel(
                     text = "2.7",
-                    bottomRightText = "mi",
+                    bottomRightText = stringResource(R.string.horologist_miles),
                 ),
             )
         }
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun metricsScreenTwoMetrics_rtl() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                MetricsScreen(
-                    firstMetric = MetricUiModel(
-                        text = "198",
-                        bottomRightText = "Peak",
-                        color = HR_MAXIMUM,
-                    ),
-                    secondMetric = MetricUiModel(
-                        text = "2.7",
-                        bottomRightText = "mi",
-                    ),
-                )
-            }
+        runScreenTest {
+            MetricsScreen(
+                firstMetric = MetricUiModel(
+                    text = "198",
+                    bottomRightText = stringResource(R.string.horologist_peak),
+                    color = HR_MAXIMUM,
+                ),
+                secondMetric = MetricUiModel(
+                    text = "2.7",
+                    bottomRightText = stringResource(R.string.horologist_miles),
+                ),
+            )
         }
     }
 }

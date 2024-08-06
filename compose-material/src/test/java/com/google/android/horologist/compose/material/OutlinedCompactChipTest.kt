@@ -20,31 +20,32 @@ import android.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsBike
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.res.stringResource
 import com.google.accompanist.testharness.TestHarness
 import com.google.android.horologist.images.base.paintable.DrawableResPaintable
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
+import com.google.android.horologist.screenshots.rng.WearLegacyComponentTest
 import org.junit.Test
+import org.robolectric.annotation.Config
 
-class OutlinedCompactChipTest : ScreenshotBaseTest() {
+class OutlinedCompactChipTest : WearLegacyComponentTest() {
 
     @Test
     fun default() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedCompactChip(
                 onClick = { },
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
             )
         }
     }
 
     @Test
     fun withIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedCompactChip(
                 onClick = { },
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 icon = Icons.Filled.Add.asPaintable(),
             )
         }
@@ -52,7 +53,7 @@ class OutlinedCompactChipTest : ScreenshotBaseTest() {
 
     @Test
     fun iconOnly() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedCompactChip(
                 onClick = { },
                 icon = Icons.Filled.Add.asPaintable(),
@@ -62,10 +63,10 @@ class OutlinedCompactChipTest : ScreenshotBaseTest() {
 
     @Test
     fun disabled() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedCompactChip(
                 onClick = { },
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 icon = Icons.Filled.Add.asPaintable(),
                 enabled = false,
             )
@@ -74,7 +75,7 @@ class OutlinedCompactChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedCompactChip(
                 onClick = { },
                 label = "Primary label very very very very very very very very very very very very very very very very very long text",
@@ -84,7 +85,7 @@ class OutlinedCompactChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = LARGEST_FONT_SCALE) {
                 OutlinedCompactChip(
                     onClick = { },
@@ -96,34 +97,33 @@ class OutlinedCompactChipTest : ScreenshotBaseTest() {
 
     @Test
     fun usingDrawableResAsIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedCompactChip(
                 onClick = { },
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 icon = DrawableResPaintable(R.drawable.ic_delete),
             )
         }
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun withIconRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                OutlinedCompactChip(
-                    onClick = { },
-                    label = "Primary label",
-                    icon = Icons.AutoMirrored.Default.DirectionsBike.asPaintable(),
-                )
-            }
+        runComponentTest {
+            OutlinedCompactChip(
+                onClick = { },
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
+                icon = Icons.AutoMirrored.Default.DirectionsBike.asPaintable(),
+            )
         }
     }
 
     @Test
     fun mirrored() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedCompactChip(
                 onClick = { },
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 icon = Icons.AutoMirrored.Default.DirectionsBike.asPaintable(),
                 iconRtlMode = IconRtlMode.Mirrored,
             )
@@ -131,30 +131,28 @@ class OutlinedCompactChipTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun mirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                OutlinedCompactChip(
-                    onClick = { },
-                    label = "Primary label",
-                    icon = Icons.AutoMirrored.Default.DirectionsBike.asPaintable(),
-                    iconRtlMode = IconRtlMode.Mirrored,
-                )
-            }
+        runComponentTest {
+            OutlinedCompactChip(
+                onClick = { },
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
+                icon = Icons.AutoMirrored.Default.DirectionsBike.asPaintable(),
+                iconRtlMode = IconRtlMode.Mirrored,
+            )
         }
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun usingDrawableResAsIconMirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                OutlinedCompactChip(
-                    onClick = { },
-                    label = "Primary label",
-                    icon = DrawableResPaintable(R.drawable.ic_media_play),
-                    iconRtlMode = IconRtlMode.Mirrored,
-                )
-            }
+        runComponentTest {
+            OutlinedCompactChip(
+                onClick = { },
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
+                icon = DrawableResPaintable(R.drawable.ic_media_play),
+                iconRtlMode = IconRtlMode.Mirrored,
+            )
         }
     }
 

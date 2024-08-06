@@ -26,27 +26,20 @@ import androidx.wear.compose.material.Text
 import com.google.android.horologist.auth.composables.chips.GuestModeChip
 import com.google.android.horologist.auth.composables.chips.SignInChip
 import com.google.android.horologist.auth.composables.model.AccountUiModel
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import org.junit.Test
 
-class SignInPromptScreenTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        screenTimeText = {}
-    },
-) {
+class SignInPromptScreenTest : WearLegacyScreenTest() {
 
     @Test
     fun idle() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignInPromptScreen(
                 state = SignInPromptScreenState.Idle,
                 title = "Sign in",
                 message = "Send messages and create chat groups with your friends",
                 onIdleStateObserved = { },
                 onAlreadySignedIn = { },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
             ) {
                 testContent()
             }
@@ -55,14 +48,13 @@ class SignInPromptScreenTest : ScreenshotBaseTest(
 
     @Test
     fun loading() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignInPromptScreen(
                 state = SignInPromptScreenState.Loading,
                 title = "Sign in",
                 message = "Send messages and create chat groups with your friends",
                 onIdleStateObserved = { },
                 onAlreadySignedIn = { },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
             ) {
                 testContent()
             }
@@ -71,14 +63,13 @@ class SignInPromptScreenTest : ScreenshotBaseTest(
 
     @Test
     fun customLoading() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignInPromptScreen(
                 state = SignInPromptScreenState.Loading,
                 title = "Sign in",
                 message = "Send messages and create chat groups with your friends",
                 onIdleStateObserved = { },
                 onAlreadySignedIn = { },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
                 loadingContent = {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("Loading...")
@@ -92,14 +83,13 @@ class SignInPromptScreenTest : ScreenshotBaseTest(
 
     @Test
     fun signedIn() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignInPromptScreen(
                 state = SignInPromptScreenState.SignedIn(AccountUiModel("user@example.com")),
                 title = "Sign in",
                 message = "Send messages and create chat groups with your friends",
                 onIdleStateObserved = { },
                 onAlreadySignedIn = { },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
             ) {
                 testContent()
             }
@@ -108,14 +98,13 @@ class SignInPromptScreenTest : ScreenshotBaseTest(
 
     @Test
     fun signedOut() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignInPromptScreen(
                 state = SignInPromptScreenState.SignedOut,
                 title = "Sign in",
                 message = "Send messages and create chat groups with your friends",
                 onIdleStateObserved = { },
                 onAlreadySignedIn = { },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
             ) {
                 testContent()
             }
@@ -124,7 +113,7 @@ class SignInPromptScreenTest : ScreenshotBaseTest(
 
     @Test
     fun signedOutTruncation() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SignInPromptScreen(
                 state = SignInPromptScreenState.SignedOut,
                 title = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
@@ -136,7 +125,6 @@ class SignInPromptScreenTest : ScreenshotBaseTest(
                     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
                 onIdleStateObserved = { },
                 onAlreadySignedIn = { },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
             ) {
                 testContent()
             }

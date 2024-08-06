@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+
 package com.google.android.horologist.networks.okhttp.urlconnection
 
 /*
@@ -47,8 +49,6 @@ import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
-import okhttp3.internal.notifyAll
-import okhttp3.internal.wait
 import okio.Buffer
 import okio.BufferedSink
 import okio.Pipe
@@ -162,7 +162,7 @@ public class FirebaseUrlFactory(private val client: Call.Factory) : URLStreamHan
             return try {
                 val response = getResponse(true)
                 if (hasBody(response) && response.code >= HTTP_BAD_REQUEST) {
-                    response.body?.byteStream()
+                    response.body.byteStream()
                 } else {
                     null
                 }
@@ -223,13 +223,13 @@ public class FirebaseUrlFactory(private val client: Call.Factory) : URLStreamHan
             return toMultimap(requestHeaders.build(), null)
         }
 
-        override fun getInputStream(): InputStream? {
+        override fun getInputStream(): InputStream {
             if (!doInput) {
                 throw ProtocolException("This protocol does not support input")
             }
             val response = getResponse(false)
             if (response.code >= HTTP_BAD_REQUEST) throw FileNotFoundException(url.toString())
-            return response.body?.byteStream()
+            return response.body.byteStream()
         }
 
         override fun getOutputStream(): OutputStream {
@@ -381,9 +381,13 @@ public class FirebaseUrlFactory(private val client: Call.Factory) : URLStreamHan
             return getResponse(true).code
         }
 
-        override fun setRequestProperty(field: String, newValue: String) {
+        override fun setRequestProperty(field: String, newValue: String?) {
             check(!connected) { "Cannot set request property after connection is made" }
-            requestHeaders[field] = newValue
+            if (newValue != null) {
+                requestHeaders[field] = newValue
+            } else {
+                requestHeaders.removeAll(field)
+            }
         }
 
         override fun setIfModifiedSince(newValue: Long) {
@@ -598,11 +602,11 @@ public class FirebaseUrlFactory(private val client: Call.Factory) : URLStreamHan
             }
 
             override fun getResponseCode(): Int {
-                return delegate.getResponseCode()
+                return delegate.responseCode
             }
 
             override fun getResponseMessage(): String {
-                return delegate.getResponseMessage()
+                return delegate.responseMessage
             }
 
             override fun setRequestMethod(method: String) {
@@ -764,7 +768,7 @@ public class FirebaseUrlFactory(private val client: Call.Factory) : URLStreamHan
                 delegate.setIfModifiedSince(newValue)
             }
 
-            override fun setRequestProperty(field: String, newValue: String) {
+            override fun setRequestProperty(field: String, newValue: String?) {
                 delegate.setRequestProperty(field, newValue)
             }
 
@@ -864,13 +868,8 @@ public class FirebaseUrlFactory(private val client: Call.Factory) : URLStreamHan
 
             // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
             // response is malformed. For best compatibility, we honor the headers.
-            return if (contentLength(response.headers) != -1L ||
+            return contentLength(response.headers) != -1L ||
                 "chunked".equals(response.header("Transfer-Encoding"), ignoreCase = true)
-            ) {
-                true
-            } else {
-                false
-            }
         }
 
         fun contentLength(headers: Headers): Long {
@@ -933,3 +932,7 @@ public class FirebaseUrlFactory(private val client: Call.Factory) : URLStreamHan
         }
     }
 }
+
+private fun Any.wait() = (this as Object).wait()
+
+private fun Any.notifyAll() = (this as Object).notifyAll()

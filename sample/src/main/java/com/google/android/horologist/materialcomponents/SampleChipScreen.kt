@@ -43,7 +43,8 @@ internal fun SampleChipScreen(
         item {
             Chip(
                 label = "Primary label",
-                onClick = { },
+                onClick = { println("Click") },
+                onLongClick = { println("LongClick") },
             )
         }
         item {

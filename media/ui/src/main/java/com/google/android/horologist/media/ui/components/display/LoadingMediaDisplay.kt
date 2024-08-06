@@ -24,18 +24,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.PlaceholderState
 import androidx.wear.compose.material.placeholder
 import androidx.wear.compose.material.placeholderShimmer
-import androidx.wear.compose.material.rememberPlaceholderState
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.compose.layout.rememberActivePlaceholderState
 import com.google.android.horologist.media.ui.components.animated.MarqueeTextMediaDisplay
+import com.google.android.horologist.media.ui.util.isLargeScreen
 
 /**
  * A loading state display. This style is matched to the Text of [TextMediaDisplay] as
@@ -46,12 +48,14 @@ import com.google.android.horologist.media.ui.components.animated.MarqueeTextMed
 @Composable
 public fun LoadingMediaDisplay(
     modifier: Modifier = Modifier,
+    placeholderState: PlaceholderState = rememberActivePlaceholderState { false },
 ) {
-    // Always shimmer on the placeholder pills.
-    val placeholderState = rememberPlaceholderState(isContentReady = { false })
+    val isLargeScreen = LocalConfiguration.current.isLargeScreen
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(1.dp))
+        if (!isLargeScreen) {
+            Spacer(modifier = Modifier.height(1.dp))
+        }
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(6.dp))
@@ -61,7 +65,11 @@ public fun LoadingMediaDisplay(
                 .width(120.dp)
                 .height(12.dp),
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(
+            modifier = Modifier.height(
+                if (isLargeScreen) 9.dp else 8.dp,
+            ),
+        )
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(6.dp))
@@ -71,9 +79,5 @@ public fun LoadingMediaDisplay(
                 .width(80.dp)
                 .height(12.dp),
         )
-    }
-
-    if (!placeholderState.isShowContent) {
-        LaunchedEffect(placeholderState) { placeholderState.startPlaceholderAnimation() }
     }
 }

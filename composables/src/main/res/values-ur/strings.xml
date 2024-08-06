@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingQuantity">
 <!--
- Copyright 2023 The Android Open Source Project
+ Copyright 2024 The Android Open Source Project
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@
   </plurals>
   <string name="horologist_time_picker_min">منٹ</string>
   <string name="horologist_time_picker_period">وقفہ</string>
-  <string name="horologist_time_picker_am">AM</string>
-  <string name="horologist_time_picker_pm">PM</string>
   <string name="horologist_picker_day">دن</string>
   <string name="horologist_picker_month">ماہ</string>
   <string name="horologist_picker_year">سال</string>

@@ -15,8 +15,9 @@ uses [Media3](https://developer.android.com/jetpack/androidx/releases/media3).
 
 The app showcases the implementation of the following features:
 
-- Media playback, restricted to paired Bluetooth devices
-- Launch of Bluetooth settings to connect devices for media playback
+- Media playback, restricted to paired Bluetooth devices.
+  This is achieved by calling [`setSuppressPlaybackOnUnsuitableOutput`](https://developer.android.com/reference/androidx/media3/exoplayer/ExoPlayer.Builder#setSuppressPlaybackOnUnsuitableOutput(boolean)) method on the `Exoplayer` instance.
+- Launch of Wear Output Switcher to connect devices for media playback
 - Volume control
 - Radial background based on media artwork color palette
 - Download media

@@ -123,6 +123,7 @@ public fun AlertDialog(
 @ExperimentalHorologistApi
 @Composable
 public fun AlertContent(
+    modifier: Modifier = Modifier,
     onCancel: (() -> Unit)? = null,
     onOk: (() -> Unit)? = null,
     icon: @Composable (() -> Unit)? = null,
@@ -131,7 +132,9 @@ public fun AlertContent(
     okButtonContentDescription: String = stringResource(android.R.string.ok),
     cancelButtonContentDescription: String = stringResource(android.R.string.cancel),
     state: ScalingLazyColumnState = rememberColumnState(
-        ScalingLazyColumnDefaults.responsive(),
+        ScalingLazyColumnDefaults.responsive(
+            additionalPaddingAtBottom = 0.dp,
+        ),
     ),
     showPositionIndicator: Boolean = true,
     content: (ScalingLazyListScope.() -> Unit)? = null,
@@ -142,6 +145,7 @@ public fun AlertContent(
     }
 
     ResponsiveDialogContent(
+        modifier = modifier,
         icon = icon,
         title = title?.let {
             {

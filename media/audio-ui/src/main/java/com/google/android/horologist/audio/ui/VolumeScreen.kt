@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalWearFoundationApi::class)
+
 package com.google.android.horologist.audio.ui
 
 import android.media.AudioManager
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -29,11 +29,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
+import androidx.wear.compose.foundation.rememberActiveFocusRequester
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material.InlineSlider
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Stepper
@@ -46,8 +53,8 @@ import com.google.android.horologist.audio.ui.components.toAudioOutputUi
 import com.google.android.horologist.compose.material.Icon
 import com.google.android.horologist.compose.material.IconRtlMode
 import com.google.android.horologist.compose.material.util.DECORATIVE_ELEMENT_CONTENT_DESCRIPTION
-import com.google.android.horologist.compose.rotaryinput.RotaryDefaults.isLowResInput
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
+import kotlin.math.roundToInt
 
 /**
  * Volume Screen with an [InlineSlider] and Increase/Decrease buttons for the Audio Stream Volume.
@@ -75,11 +82,12 @@ public fun VolumeScreen(
 
     VolumeScreen(
         modifier = modifier
-            .rotaryVolumeControlsWithFocus(
-                volumeUiStateProvider = { volumeViewModel.volumeUiState.value },
-                onRotaryVolumeInput = { newVolume -> volumeViewModel.setVolume(newVolume) },
-                localView = LocalView.current,
-                isLowRes = isLowResInput(),
+            .rotaryScrollable(
+                volumeRotaryBehavior(
+                    volumeUiStateProvider = { volumeViewModel.volumeUiState.value },
+                    onRotaryVolumeInput = { newVolume -> volumeViewModel.setVolume(newVolume) },
+                ),
+                focusRequester = rememberActiveFocusRequester(),
             ),
         volume = { volumeUiState },
         audioOutputUi = audioOutput.toAudioOutputUi(),
@@ -110,10 +118,13 @@ public fun VolumeScreen(
     VolumeScreen(
         volume = volume,
         contentSlot = {
-            val volumeState = volume()
             DeviceChip(
                 modifier = Modifier.padding(horizontal = 18.dp),
-                volumeDescription = volumeDescription(volumeState, audioOutputUi.isConnected),
+                volumeDescription = if (audioOutputUi.isConnected) {
+                    stringResource(id = R.string.horologist_volume_screen_connected_state)
+                } else {
+                    stringResource(id = R.string.horologist_volume_screen_not_connected_state)
+                },
                 deviceName = audioOutputUi.displayName,
                 icon = {
                     Icon(
@@ -153,7 +164,10 @@ public fun VolumeWithLabelScreen(
         contentSlot = {
             Text(
                 stringResource(id = R.string.horologist_volume_screen_volume_label),
-                style = MaterialTheme.typography.button,
+                style = MaterialTheme.typography.button.copy(
+                    color = MaterialTheme.colors.onBackground,
+                    fontWeight = FontWeight.Normal,
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Clip,
             )
@@ -180,9 +194,18 @@ internal fun VolumeScreen(
     showVolumeIndicator: Boolean = true,
     volumeColor: Color = MaterialTheme.colors.secondary,
 ) {
-    Box(modifier = modifier.fillMaxSize())
     val volumeState = volume()
+    val volumePercent = (100f * volumeState.current / volumeState.max).roundToInt()
+    val volumeDescription = if (volumeState.current == 0) {
+        stringResource(id = R.string.horologist_volume_screen_volume_zero)
+    } else {
+        stringResource(id = R.string.horologist_volume_screen_volume_percent, volumePercent)
+    }
     Stepper(
+        modifier = modifier.semantics {
+            liveRegion = LiveRegionMode.Assertive
+            contentDescription = volumeDescription
+        },
         value = volumeState.current.toFloat(),
         onValueChange = { if (it > volumeState.current) increaseVolume() else decreaseVolume() },
         steps = volumeState.max - 1,
@@ -193,6 +216,7 @@ internal fun VolumeScreen(
         decreaseIcon = {
             decreaseIcon()
         },
+        enableRangeSemantics = false,
     ) {
         contentSlot()
     }
@@ -223,14 +247,5 @@ public object VolumeScreenDefaults {
             contentDescription = stringResource(id = R.string.horologist_volume_screen_volume_down_content_description),
             rtlMode = IconRtlMode.Mirrored,
         )
-    }
-}
-
-@Composable
-private fun volumeDescription(volumeUiState: VolumeUiState, isAudioOutputConnected: Boolean): String {
-    return if (isAudioOutputConnected) {
-        stringResource(id = R.string.horologist_volume_screen_connected_state, volumeUiState.current)
-    } else {
-        stringResource(id = R.string.horologist_volume_screen_not_connected_state)
     }
 }

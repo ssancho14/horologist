@@ -21,18 +21,13 @@ import com.google.android.horologist.health.composables.theme.HR_HARD
 import com.google.android.horologist.health.composables.theme.HR_LIGHT
 import com.google.android.horologist.health.composables.theme.HR_MAXIMUM
 import com.google.android.horologist.health.composables.theme.HR_MODERATE
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyComponentTest
 import org.junit.Test
 
-class MetricDisplayTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        screenTimeText = {}
-    },
-) {
+class MetricDisplayTest : WearLegacyComponentTest() {
     @Test
     fun metricDisplay() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "139",
@@ -46,7 +41,7 @@ class MetricDisplayTest : ScreenshotBaseTest(
 
     @Test
     fun metricDisplayTextOnly() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "18:52",
@@ -58,7 +53,7 @@ class MetricDisplayTest : ScreenshotBaseTest(
 
     @Test
     fun metricDisplayTopRightText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "8'32\"",
@@ -71,7 +66,7 @@ class MetricDisplayTest : ScreenshotBaseTest(
 
     @Test
     fun metricDisplayBottomRightText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "2.1",
@@ -84,7 +79,7 @@ class MetricDisplayTest : ScreenshotBaseTest(
 
     @Test
     fun metricDisplayTextTruncation() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "Very very long text",
@@ -97,7 +92,7 @@ class MetricDisplayTest : ScreenshotBaseTest(
 
     @Test
     fun metricDisplayBothRightTextTruncation() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "139",
@@ -110,7 +105,7 @@ class MetricDisplayTest : ScreenshotBaseTest(
 
     @Test
     fun metricDisplayTopRightTextTruncation() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "139",
@@ -122,7 +117,7 @@ class MetricDisplayTest : ScreenshotBaseTest(
 
     @Test
     fun metricDisplayBottomRightTextTruncation() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             MetricDisplay(
                 metric = MetricUiModel(
                     text = "139",

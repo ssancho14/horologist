@@ -23,24 +23,18 @@ import androidx.wear.protolayout.ActionBuilders
 import com.google.android.horologist.compose.tools.TileLayoutPreview
 import com.google.android.horologist.media.ui.R
 import com.google.android.horologist.media.ui.uamp.UampColors
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import com.google.android.horologist.tiles.images.drawableResToImageResource
 import org.junit.Test
 import org.robolectric.annotation.Config
 
-class MediaCollectionsTileTest : ScreenshotBaseTest(
-    ScreenshotTestRule.screenshotTestRuleParams {
-        screenTimeText = {}
-    },
-) {
+class MediaCollectionsTileTest : WearLegacyScreenTest() {
     @Test
     fun largeRound() {
         tileScreenshot()
     }
 
     @Config(
-        sdk = [30],
         qualifiers = "+w192dp-h192dp",
     )
     @Test
@@ -49,7 +43,6 @@ class MediaCollectionsTileTest : ScreenshotBaseTest(
     }
 
     @Config(
-        sdk = [30],
         qualifiers = "w192dp-h192dp-small-notlong-round-watch-hdpi-keyshidden-nonav",
     )
     @Test
@@ -58,7 +51,7 @@ class MediaCollectionsTileTest : ScreenshotBaseTest(
     }
 
     fun tileScreenshot() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SampleTilePreview()
         }
     }
@@ -105,6 +98,7 @@ class MediaCollectionsTileTest : ScreenshotBaseTest(
             )
         }
 
+        @Suppress("DEPRECATION")
         TileLayoutPreview(
             tileState,
             resourceState,

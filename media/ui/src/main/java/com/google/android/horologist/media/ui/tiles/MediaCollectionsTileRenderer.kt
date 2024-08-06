@@ -61,6 +61,7 @@ public class MediaCollectionsTileRenderer(
         deviceParameters: DeviceParameters,
     ): LayoutElementBuilders.LayoutElement {
         return PrimaryLayout.Builder(deviceParameters)
+            .setResponsiveContentInsetEnabled(true)
             .setContent(
                 Column.Builder()
                     .setWidth(expandedDimensionProp)
@@ -115,7 +116,7 @@ public class MediaCollectionsTileRenderer(
     override fun Resources.Builder.produceRequestedResources(
         resourceState: ResourceState,
         deviceParameters: DeviceParameters,
-        resourceIds: MutableList<String>,
+        resourceIds: List<String>,
     ) {
         for ((image, imageResource) in resourceState.images) {
             if (imageResource != null) {

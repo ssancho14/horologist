@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.google.android.horologist.compose.material
 
 import android.R
@@ -25,22 +27,24 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ChipDefaults
 import com.google.accompanist.testharness.TestHarness
 import com.google.android.horologist.images.base.paintable.DrawableResPaintable
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
+import com.google.android.horologist.screenshots.rng.WearLegacyComponentTest
 import org.junit.Test
+import org.robolectric.annotation.Config
 
-class OutlinedChipTest : ScreenshotBaseTest() {
+class OutlinedChipTest : WearLegacyComponentTest() {
 
     @Test
     fun default() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
             )
         }
@@ -48,20 +52,20 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabel() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
             )
         }
     }
 
     @Test
     fun withIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
                 icon = Icons.Default.Image.asPaintable(),
             )
@@ -70,9 +74,9 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLargeIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
                 icon = Icon32dp.asPaintable(),
                 largeIcon = true,
@@ -82,11 +86,11 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.Image.asPaintable(),
             )
         }
@@ -94,11 +98,11 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndLargeIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icon32dp.asPaintable(),
                 largeIcon = true,
             )
@@ -107,11 +111,11 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun disabled() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.Image.asPaintable(),
                 enabled = false,
             )
@@ -120,7 +124,7 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
                 label = "Primary label very very very very very very very very very very very very very very very very very long text",
                 onClick = { },
@@ -130,7 +134,7 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = LARGEST_FONT_SCALE) {
                 OutlinedChip(
                     label = "Primary label very very very very very very very very very very very very very very very very very long text",
@@ -142,7 +146,7 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLongTextAndMediumFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = MEDIUM_FONT_SCALE) {
                 OutlinedChip(
                     label = "Primary label very very very very very very very very very very very very very very very very very long text",
@@ -154,7 +158,7 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndIconAndLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
                 label = "Primary label very very very very very very very very long text",
                 onClick = { },
@@ -166,7 +170,7 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndIconAndLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = LARGEST_FONT_SCALE) {
                 OutlinedChip(
                     label = "Primary label very very very very very very very very long text",
@@ -180,7 +184,7 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndLargeIconAndLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
                 label = "Primary label very very very very very very very very long text",
                 onClick = { },
@@ -193,7 +197,7 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndLargeIconAndLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = LARGEST_FONT_SCALE) {
                 OutlinedChip(
                     label = "Primary label very very very very very very very very long text",
@@ -208,9 +212,9 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun usingSmallIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
                 icon = Icon12dp.asPaintable(),
             )
@@ -219,20 +223,20 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun usingDrawableResAsIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                icon = DrawableResPaintable(android.R.drawable.ic_delete),
+                icon = DrawableResPaintable(R.drawable.ic_delete),
             )
         }
     }
 
     @Test
     fun withLargeIconUsingSmallIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
                 icon = Icon12dp.asPaintable(),
                 largeIcon = true,
@@ -242,9 +246,9 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun usingExtraLargeIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
                 icon = Icon48dp.asPaintable(),
             )
@@ -253,9 +257,9 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLargeIconUsingExtraLargeIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
                 icon = Icon48dp.asPaintable(),
                 largeIcon = true,
@@ -264,26 +268,25 @@ class OutlinedChipTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun withSecondaryLabelAndIconRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                OutlinedChip(
-                    label = "Primary label",
-                    onClick = { },
-                    secondaryLabel = "Secondary label",
-                    icon = Icons.Default.Image.asPaintable(),
-                )
-            }
+        runComponentTest {
+            OutlinedChip(
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
+                onClick = { },
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
+                icon = Icons.Default.Image.asPaintable(),
+            )
         }
     }
 
     @Test
     fun withSecondaryChipColors() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.Image.asPaintable(),
                 colors = ChipDefaults.secondaryChipColors(),
             )
@@ -292,11 +295,11 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withGradientBackgroundChipColors() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.Image.asPaintable(),
                 colors = ChipDefaults.gradientBackgroundChipColors(),
             )
@@ -305,11 +308,11 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withImageBackgroundChipColors() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             OutlinedChip(
-                label = "Primary label",
+                label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                 onClick = { },
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.Image.asPaintable(),
                 colors = ChipDefaults.imageBackgroundChipColors(
                     backgroundImagePainter = painterResource(id = R.drawable.ic_dialog_alert),
@@ -320,13 +323,13 @@ class OutlinedChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withIconMirrored() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 @Suppress("Deprecation")
                 OutlinedChip(
-                    label = "Primary label",
+                    label = stringResource(com.google.android.horologist.compose.material.R.string.primary_label),
                     onClick = { },
-                    secondaryLabel = "Secondary label",
+                    secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                     icon = Icons.Outlined.VolumeDown.asPaintable(),
                     iconRtlMode = IconRtlMode.Mirrored,
                     colors = ChipDefaults.imageBackgroundChipColors(

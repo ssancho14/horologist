@@ -19,21 +19,15 @@ package com.google.android.horologist.auth.composables.screens
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import com.google.android.horologist.auth.composables.model.AccountUiModel
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import org.junit.Test
 
-class SelectAccountScreenTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        screenTimeText = {}
-    },
-) {
+class SelectAccountScreenTest : WearLegacyScreenTest() {
 
     @Test
     fun selectAccountScreen() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SelectAccountScreen(
                 accounts = listOf(
                     AccountUiModel(
@@ -43,21 +37,19 @@ class SelectAccountScreenTest : ScreenshotBaseTest(
                     AccountUiModel(email = "thisisaverylongemail@example.com"),
                 ),
                 onAccountClicked = { _, _ -> },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
             )
         }
     }
 
     @Test
     fun selectAccountScreenNoAvatar() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             SelectAccountScreen(
                 accounts = listOf(
                     AccountUiModel(email = "maggie@example.com"),
                     AccountUiModel(email = "thisisaverylongemailaccountsample@example.com"),
                 ),
                 onAccountClicked = { _, _ -> },
-                columnState = ScalingLazyColumnDefaults.responsive().create(),
                 defaultAvatar = null,
             )
         }

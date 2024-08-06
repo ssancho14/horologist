@@ -1,5 +1,6 @@
 import com.android.build.gradle.LibraryExtension
 import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URL
 import java.util.Properties
 
@@ -27,14 +28,11 @@ buildscript {
 
     dependencies {
         classpath(libs.android.tools.build.gradle)
-        classpath(libs.android.gradlePlugin)
         classpath(libs.kotlin.gradlePlugin)
 
         classpath(libs.gradleMavenPublishPlugin)
 
         classpath(libs.dokka)
-
-        classpath(libs.metalavaGradle)
 
         classpath(libs.dagger.hiltandroidplugin)
     }
@@ -46,7 +44,11 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.protobuf) apply false
     alias(libs.plugins.gradleMavenPublishPlugin)
+    alias(libs.plugins.metalavaGradle) apply false
     alias(libs.plugins.dependencyAnalysis)
+    alias(libs.plugins.roborazzi) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 apply(plugin = "org.jetbrains.dokka")
@@ -64,13 +66,6 @@ allprojects {
         val composeSnapshot = rootProject.libs.versions.composesnapshot.get()
         if (composeSnapshot.length > 1) {
             maven(url = uri("https://androidx.dev/snapshots/builds/$composeSnapshot/artifacts/repository/"))
-        }
-
-        maven {
-            url = uri("https://jitpack.io")
-            content {
-                includeGroup("com.github.QuickBirdEng.kotlin-snapshot-testing")
-            }
         }
     }
 
@@ -104,35 +99,19 @@ subprojects {
         }
     }
 
-    configurations.configureEach {
-        resolutionStrategy.eachDependency {
-            // Make sure that we're using the Android version of Guava
-            if (this@configureEach.name.contains("android", ignoreCase = true)
-                && this@eachDependency.requested.group == "com.google.guava"
-                && this@eachDependency.requested.module.name == "guava"
-                && this@eachDependency.requested.version?.contains("jre") == true) {
-                this@eachDependency.requested.version?.replace(
-                    "jre",
-                    "android"
-                )?.let { this@eachDependency.useVersion(it) }
-            }
-        }
-    }
-
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            if (System.getenv("CI") == "true") {
+        compilerOptions {
+            if (rootProject.property("strict.build") == true) {
                 // Treat all Kotlin warnings as errors
                 allWarningsAsErrors = true
             }
-            // Set JVM target to 1.8
-            jvmTarget = "11"
-            freeCompilerArgs = freeCompilerArgs + listOf(
+            jvmTarget.set(JvmTarget.JVM_17)
+            freeCompilerArgs.addAll(listOf(
                 // Allow use of @OptIn
                 "-opt-in=kotlin.RequiresOptIn",
                 // Enable default methods in interfaces
                 "-Xjvm-default=all"
-            )
+            ))
         }
     }
 
@@ -200,39 +179,28 @@ subprojects {
                 suppressedFiles.from(file("src/debug/java"))
             }
         }
-        if (plugins.hasPlugin("com.android.library")) {
-            configure<com.android.build.gradle.LibraryExtension> {
-                lint {
-                    // Remove once fixed: https://issuetracker.google.com/196420849
-                    disable.add("ExpiringTargetSdkVersion")
-                }
-            }
-        }
 
+        val buildDir = project.layout.buildDirectory
+        val outputDirectory =
+            buildDir.dir("generated/sources/generateVersionFile")
         val generateVersionFile = tasks.register("generateVersionFile") {
-            val outputDirectory =
-                project.file("${project.buildDir}/generated/sources/generateVersionFile")
 
             doLast {
-                val versionName = project.properties.get("VERSION_NAME") as String
+                val versionName = project.properties["VERSION_NAME"] as String
 
-                val manifestDir = File(outputDirectory, "META-INF")
-                manifestDir.mkdirs()
+                val manifestDir = outputDirectory.get().dir("META-INF")
+                manifestDir.asFile.mkdirs()
                 val name = if (project.parent?.name == "horologist")
                     project.name
                 else
                     project.parent?.name + project.name
-                File(
-                    manifestDir,
+                manifestDir.file(
                     "com.google.android.horologist_$name.version"
-                ).writeText("${versionName}\n")
+                ).asFile.writeText("${versionName}\n")
             }
         }
 
         afterEvaluate {
-            val outputDirectory =
-                project.file("${project.buildDir}/generated/sources/generateVersionFile")
-
             val processResources = tasks.findByName("processResources")
             if (processResources != null) {
                 processResources.dependsOn(generateVersionFile)
@@ -276,18 +244,15 @@ subprojects {
             // any snapshot dependencies
             configurations.configureEach {
                 dependencies.configureEach {
-                    if (this is ProjectDependency) {
-                        // We don't care about internal project dependencies
-                        return@configureEach
+                    // We don't care about internal project dependencies
+                    if (this !is ProjectDependency) {
+                        val depVersion = this.version
+                        if (depVersion != null && depVersion.endsWith("SNAPSHOT")) {
+                            throw IllegalArgumentException(
+                                "Using SNAPSHOT dependency with non-SNAPSHOT library version: $this"
+                            )
+                        }
                     }
-
-//                    val depVersion = dependency.version
-                    // TODO reenable https://github.com/google/horologist/issues/34
-//                    if (depVersion != null && depVersion.endsWith("SNAPSHOT")) {
-//                        throw IllegalArgumentException(
-//                                "Using SNAPSHOT dependency with non-SNAPSHOT library version: $dependency"
-//                        )
-//                    }
                 }
             }
         }

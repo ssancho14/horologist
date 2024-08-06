@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.google.android.horologist.compose.rotaryinput
 
 import android.R
@@ -43,7 +45,7 @@ class HapticsTest {
     }
 
     @Test
-    @Config(sdk = [30])
+    @Config(sdk = [34])
     fun testPixelWatch1Wear35() {
         ShadowBuild.setManufacturer("Google")
         ShadowBuild.setModel("Google Pixel Watch")
@@ -55,7 +57,7 @@ class HapticsTest {
 
         val hapticFeedback = getHapticFeedback()
 
-        assertThat(hapticFeedback.javaClass.simpleName).isEqualTo("Wear3point5RotaryHapticFeedback")
+        assertThat(hapticFeedback.javaClass.simpleName).isEqualTo("Wear4AtLeastRotaryHapticFeedback")
     }
 
     @Test
@@ -116,7 +118,7 @@ class HapticsTest {
 
         val hapticFeedback = getHapticFeedback()
 
-        assertThat(hapticFeedback.javaClass.simpleName).isEqualTo("GalaxyWatchClassicHapticFeedback")
+        assertThat(hapticFeedback.javaClass.simpleName).isEqualTo("GalaxyWatchHapticFeedback")
     }
 
     @Test
@@ -128,7 +130,7 @@ class HapticsTest {
 
         val hapticFeedback = getHapticFeedback()
 
-        assertThat(hapticFeedback.javaClass.simpleName).isEqualTo("DefaultRotaryHapticFeedback")
+        assertThat(hapticFeedback.javaClass.simpleName).isEqualTo("GalaxyWatchHapticFeedback")
     }
 
     private fun getHapticFeedback(): RotaryHapticFeedback {

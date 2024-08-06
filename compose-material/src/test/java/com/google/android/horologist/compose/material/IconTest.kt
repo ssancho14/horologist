@@ -19,18 +19,17 @@ package com.google.android.horologist.compose.material
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.VolumeDown
 import androidx.compose.material.icons.outlined.Abc
-import androidx.compose.ui.unit.LayoutDirection
-import com.google.accompanist.testharness.TestHarness
 import com.google.android.horologist.images.base.paintable.DrawableResPaintable
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
+import com.google.android.horologist.screenshots.rng.WearLegacyComponentTest
 import org.junit.Test
+import org.robolectric.annotation.Config
 
-class IconTest : ScreenshotBaseTest() {
+class IconTest : WearLegacyComponentTest() {
 
     @Test
     fun default() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Icon(
                 paintable = Icons.Outlined.Abc.asPaintable(),
                 contentDescription = "contentDescription",
@@ -39,20 +38,19 @@ class IconTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun defaultRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Icon(
-                    paintable = Icons.Outlined.Abc.asPaintable(),
-                    contentDescription = "contentDescription",
-                )
-            }
+        runComponentTest {
+            Icon(
+                paintable = Icons.Outlined.Abc.asPaintable(),
+                contentDescription = "contentDescription",
+            )
         }
     }
 
     @Test
     fun mirrored() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Icon(
                 paintable = Icons.Outlined.Abc.asPaintable(),
                 contentDescription = "contentDescription",
@@ -62,21 +60,20 @@ class IconTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun mirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Icon(
-                    paintable = Icons.Outlined.Abc.asPaintable(),
-                    contentDescription = "contentDescription",
-                    rtlMode = IconRtlMode.Mirrored,
-                )
-            }
+        runComponentTest {
+            Icon(
+                paintable = Icons.Outlined.Abc.asPaintable(),
+                contentDescription = "contentDescription",
+                rtlMode = IconRtlMode.Mirrored,
+            )
         }
     }
 
     @Test
     fun autoMirroredLTR() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Icon(
                 paintable = Icons.AutoMirrored.Outlined.VolumeDown.asPaintable(),
                 contentDescription = "contentDescription",
@@ -85,20 +82,19 @@ class IconTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun autoMirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Icon(
-                    paintable = Icons.AutoMirrored.Outlined.VolumeDown.asPaintable(),
-                    contentDescription = "contentDescription",
-                )
-            }
+        runComponentTest {
+            Icon(
+                paintable = Icons.AutoMirrored.Outlined.VolumeDown.asPaintable(),
+                contentDescription = "contentDescription",
+            )
         }
     }
 
     @Test
     fun usingDrawableResAsIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Icon(
                 paintable = DrawableResPaintable(android.R.drawable.ic_media_play),
                 contentDescription = "contentDescription",
@@ -107,20 +103,19 @@ class IconTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun usingDrawableResAsIconRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Icon(
-                    paintable = DrawableResPaintable(android.R.drawable.ic_media_play),
-                    contentDescription = "contentDescription",
-                )
-            }
+        runComponentTest {
+            Icon(
+                paintable = DrawableResPaintable(android.R.drawable.ic_media_play),
+                contentDescription = "contentDescription",
+            )
         }
     }
 
     @Test
     fun usingDrawableResAsIconMirrored() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             Icon(
                 paintable = DrawableResPaintable(android.R.drawable.ic_media_play),
                 contentDescription = "contentDescription",
@@ -130,15 +125,14 @@ class IconTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun usingDrawableResAsIconMirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Icon(
-                    paintable = DrawableResPaintable(android.R.drawable.ic_media_play),
-                    contentDescription = "contentDescription",
-                    rtlMode = IconRtlMode.Mirrored,
-                )
-            }
+        runComponentTest {
+            Icon(
+                paintable = DrawableResPaintable(android.R.drawable.ic_media_play),
+                contentDescription = "contentDescription",
+                rtlMode = IconRtlMode.Mirrored,
+            )
         }
     }
 }

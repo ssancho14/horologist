@@ -34,18 +34,15 @@ import androidx.wear.compose.material.LocalTextStyle
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.dialog.Alert
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
-import com.google.android.horologist.compose.layout.rememberColumnState
 import com.google.android.horologist.compose.material.AlertContent
 import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.ConfirmationContent
 import com.google.android.horologist.compose.material.ToggleChip
 import com.google.android.horologist.compose.material.ToggleChipToggleControl
 import com.google.android.horologist.compose.tools.Device
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-class DialogTest(device: Device) : ScreenSizeTest(
+class DialogTest(device: Device) : WearLegacyScreenSizeTest(
     device = device,
     showTimeText = false,
 ) {
@@ -91,19 +88,7 @@ class DialogTest(device: Device) : ScreenSizeTest(
 
     @Test
     fun longDialogScreen1() {
-        lateinit var columnState: ScalingLazyColumnState
-
-        runTest(testFn = {
-            screenshotTestRule.interact {
-                runBlocking {
-                    columnState.state.scrollToItem(999, 0)
-                }
-            }
-
-            screenshotTestRule.takeScreenshot()
-        }) {
-            columnState = rememberColumnState()
-
+        runTest {
             AlertContent(
                 title = "Turn on Bedtime mode?",
                 message = "Watch screen, tilt-to-wake, and touch are turned off. " +
@@ -113,7 +98,6 @@ class DialogTest(device: Device) : ScreenSizeTest(
                 onCancel = {},
                 okButtonContentDescription = stringResource(R.string.ok),
                 cancelButtonContentDescription = stringResource(R.string.cancel),
-                state = columnState,
             ) {
                 item {
                     ToggleChip(
@@ -125,23 +109,17 @@ class DialogTest(device: Device) : ScreenSizeTest(
                 }
             }
         }
+
+        // TODO https://github.com/google/horologist/issues/2237
+//        composeRule.onNode(hasScrollToNodeAction())
+//            .performTouchInput { repeat(10) { swipeUp() } }
+//
+//        captureScreenshot("_2")
     }
 
     @Test
     fun batterySaverScreen() {
-        lateinit var columnState: ScalingLazyColumnState
-
-        runTest(testFn = {
-            screenshotTestRule.interact {
-                runBlocking {
-                    columnState.state.scrollToItem(999, 0)
-                }
-            }
-
-            screenshotTestRule.takeScreenshot()
-        }) {
-            columnState = rememberColumnState()
-
+        runTest {
             AlertContent(
                 icon = {
                     Icon(
@@ -155,7 +133,6 @@ class DialogTest(device: Device) : ScreenSizeTest(
                 onCancel = {},
                 okButtonContentDescription = stringResource(R.string.ok),
                 cancelButtonContentDescription = stringResource(R.string.cancel),
-                state = columnState,
             ) {
                 item {
                     Chip(
@@ -182,6 +159,12 @@ class DialogTest(device: Device) : ScreenSizeTest(
                 }
             }
         }
+
+        // TODO https://github.com/google/horologist/issues/2237
+//        composeRule.onNode(hasScrollToNodeAction())
+//            .performTouchInput { repeat(10) { swipeUp() } }
+//
+//        captureScreenshot("_2")
     }
 
     @Test
@@ -224,6 +207,22 @@ class DialogTest(device: Device) : ScreenSizeTest(
                     )
                 },
                 title = "Alarm in 23 hr 59 min",
+            )
+        }
+    }
+
+    @Test
+    fun multiLineConfirmationScreen() {
+        runTest {
+            ConfirmationContent(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Completed",
+                        tint = Color.Green,
+                    )
+                },
+                title = "This example uses three lines of text to show max limit",
             )
         }
     }

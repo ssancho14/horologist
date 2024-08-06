@@ -16,47 +16,66 @@
 
 package com.google.android.horologist.compose.material
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher.Companion.keyIsDefined
+import androidx.compose.ui.test.SemanticsMatcher.Companion.keyNotDefined
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertContentDescriptionEquals
+import androidx.compose.ui.test.assertHasClickAction
+import com.google.android.horologist.screenshots.rng.WearLegacyA11yTest
 import org.junit.Test
 
-class ButtonA11yTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        enableA11y = true
-        screenTimeText = {}
-    },
-) {
+class ButtonA11yTest : WearLegacyA11yTest() {
 
     @Test
     fun default() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Button(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "contentDescription",
-                    onClick = { },
-                )
-            }
+        runComponentTest {
+            Button(
+                imageVector = Icons.Default.Check,
+                contentDescription = "contentDescription",
+                onClick = { },
+                onLongClick = {},
+            )
         }
+
+        composeRule.onNode(keyIsDefined(SemanticsProperties.Role))
+            .assertHasClickAction()
+            .assert(keyIsDefined(SemanticsActions.OnLongClick))
+            .assertContentDescriptionEquals("contentDescription")
+    }
+
+    @Test
+    fun material() {
+        runComponentTest {
+            Button(
+                imageVector = Icons.Default.Check,
+                contentDescription = "contentDescription",
+                onClick = { },
+            )
+        }
+
+        composeRule.onNode(keyIsDefined(SemanticsProperties.Role))
+            .assertHasClickAction()
+            .assert(keyNotDefined(SemanticsActions.OnLongClick))
+            .assertContentDescriptionEquals("contentDescription")
     }
 
     @Test
     fun disabled() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Button(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "contentDescription",
-                    onClick = { },
-                    enabled = false,
-                )
-            }
+        runComponentTest {
+            Button(
+                imageVector = Icons.Default.Check,
+                contentDescription = "contentDescription",
+                onClick = { },
+                enabled = false,
+            )
         }
+
+        composeRule.onNode(keyIsDefined(SemanticsProperties.Role))
+            .assertHasClickAction()
+            .assertContentDescriptionEquals("contentDescription")
     }
 }

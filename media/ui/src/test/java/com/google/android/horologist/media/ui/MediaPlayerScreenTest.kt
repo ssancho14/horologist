@@ -16,17 +16,12 @@
 
 package com.google.android.horologist.media.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.google.android.horologist.compose.tools.ThemeValues
 import com.google.android.horologist.compose.tools.themeValues
 import com.google.android.horologist.media.ui.state.PlayerUiState
 import com.google.android.horologist.media.ui.state.model.MediaUiModel
 import com.google.android.horologist.media.ui.state.model.TrackPositionUiModel
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
@@ -36,11 +31,13 @@ import kotlin.time.Duration.Companion.seconds
 @RunWith(ParameterizedRobolectricTestRunner::class)
 class MediaPlayerScreenTest(
     private val themeValue: ThemeValues,
-) : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        testLabel = themeValue.safeName.lowercase()
-    },
-) {
+) : WearLegacyScreenTest() {
+
+    override fun testName(suffix: String): String {
+        return "src/test/snapshots/images/" +
+            "${javaClass.`package`?.name}_${javaClass.simpleName}_${testInfo.methodName}_" +
+            "${themeValue.safeName.lowercase()}.png"
+    }
 
     @Test
     fun mediaPlayerScreen() {
@@ -56,7 +53,7 @@ class MediaPlayerScreenTest(
             shuffleOn = false,
             playPauseEnabled = true,
             playing = true,
-            media = MediaUiModel(
+            media = MediaUiModel.Ready(
                 id = "",
                 title = "Weather with You",
                 subtitle = "Crowded House",
@@ -69,10 +66,8 @@ class MediaPlayerScreenTest(
             connected = true,
         )
 
-        screenshotTestRule.setContent(takeScreenshot = true) {
-            Box(modifier = Modifier.background(Color.Black)) {
-                MediaPlayerTestCase(colors = themeValue.colors, playerUiState = playerUiState)
-            }
+        runTest {
+            MediaPlayerTestCase(colors = themeValue.colors, playerUiState = playerUiState)
         }
     }
 

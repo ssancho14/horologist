@@ -19,15 +19,18 @@ package com.google.android.horologist.compose.material
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.MaterialTheme
@@ -59,7 +62,8 @@ public fun Confirmation(
     durationMillis: Long = DialogDefaults.ShortDurationMillis,
     columnState: ScalingLazyColumnState = rememberColumnState(
         ScalingLazyColumnDefaults.responsive(
-            verticalArrangement = DialogDefaults.ConfirmationVerticalArrangement,
+            verticalArrangement = confirmationVerticalArrangement(),
+            additionalPaddingAtBottom = 0.dp,
         ),
     ),
 ) {
@@ -102,7 +106,8 @@ public fun ConfirmationContent(
     title: String? = null,
     columnState: ScalingLazyColumnState = rememberColumnState(
         ScalingLazyColumnDefaults.responsive(
-            verticalArrangement = DialogDefaults.ConfirmationVerticalArrangement,
+            verticalArrangement = confirmationVerticalArrangement(),
+            additionalPaddingAtBottom = 0.dp,
         ),
     ),
     showPositionIndicator: Boolean = true,
@@ -112,10 +117,11 @@ public fun ConfirmationContent(
         title = title?.let {
             {
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
                     text = it,
                     color = MaterialTheme.colors.onBackground,
                     textAlign = TextAlign.Center,
-                    maxLines = if (icon == null) 3 else 2,
+                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -142,7 +148,7 @@ public fun Confirmation(
     backgroundColor: Color = MaterialTheme.colors.background,
     contentColor: Color = contentColorFor(backgroundColor),
     iconColor: Color = contentColor,
-    verticalArrangement: Arrangement.Vertical = DialogDefaults.ConfirmationVerticalArrangement,
+    verticalArrangement: Arrangement.Vertical = confirmationVerticalArrangement(),
     contentPadding: PaddingValues = DialogDefaults.ContentPadding,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -167,3 +173,10 @@ public fun Confirmation(
         content = content,
     )
 }
+
+private fun confirmationVerticalArrangement() = Arrangement.spacedBy(
+    // NB an additional 4dp bottom padding is added after the icon
+    // in ResponsiveDialogContent to make the 8dp in the UX spec.
+    space = 4.dp,
+    alignment = Alignment.CenterVertically,
+)

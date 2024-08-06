@@ -27,7 +27,11 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.composables.Section
 import com.google.android.horologist.composables.SectionedList
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.ItemType
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScreenScaffold
+import com.google.android.horologist.compose.layout.rememberActivePlaceholderState
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.compose.material.Title
 import com.google.android.horologist.images.coil.CoilPaintable
@@ -37,7 +41,6 @@ import com.google.android.horologist.media.ui.state.model.PlaylistUiModel
 @ExperimentalHorologistApi
 @Composable
 public fun <T> PlaylistsScreen(
-    columnState: ScalingLazyColumnState,
     playlists: List<T>,
     playlistContent: @Composable (playlist: T) -> Unit,
     modifier: Modifier = Modifier,
@@ -45,7 +48,6 @@ public fun <T> PlaylistsScreen(
     PlaylistsScreen(
         playlistsScreenState = PlaylistsScreenState.Loaded(playlists),
         playlistContent = playlistContent,
-        columnState = columnState,
         modifier = modifier,
     )
 }
@@ -53,37 +55,53 @@ public fun <T> PlaylistsScreen(
 @ExperimentalHorologistApi
 @Composable
 public fun <T> PlaylistsScreen(
-    columnState: ScalingLazyColumnState,
     playlistsScreenState: PlaylistsScreenState<T>,
     playlistContent: @Composable (playlist: T) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SectionedList(
-        modifier = modifier,
-        columnState = columnState,
-    ) {
-        val sectionState = when (playlistsScreenState) {
-            is PlaylistsScreenState.Loaded<T> -> {
-                Section.State.Loaded(playlistsScreenState.playlistList)
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ItemType.Text,
+            last = ItemType.Chip,
+        ),
+    )
+
+    // TODO This should be folded into SectionedList
+    val placeholderState =
+        rememberActivePlaceholderState { playlistsScreenState !is PlaylistsScreenState.Loading }
+
+    ScreenScaffold(scrollState = columnState) {
+        SectionedList(
+            modifier = modifier,
+            columnState = columnState,
+        ) {
+            val sectionState = when (playlistsScreenState) {
+                is PlaylistsScreenState.Loaded<T> -> {
+                    Section.State.Loaded(playlistsScreenState.playlistList)
+                }
+
+                PlaylistsScreenState.Failed -> Section.State.Failed
+                PlaylistsScreenState.Loading -> Section.State.Loading
             }
 
-            PlaylistsScreenState.Failed -> Section.State.Failed
-            PlaylistsScreenState.Loading -> Section.State.Loading
-        }
+            section(state = sectionState) {
+                header {
+                    Title(
+                        R.string.horologist_browse_playlist_title,
+                        Modifier.padding(bottom = 12.dp),
+                    )
+                }
 
-        section(state = sectionState) {
-            header {
-                Title(
-                    R.string.horologist_browse_playlist_title,
-                    Modifier.padding(bottom = 12.dp),
-                )
-            }
+                loaded { playlistContent(it) }
 
-            loaded { playlistContent(it) }
-
-            loading(count = 4) {
-                Column {
-                    PlaceholderChip(colors = ChipDefaults.secondaryChipColors())
+                loading(count = 4) {
+                    Column {
+                        PlaceholderChip(
+                            colors = ChipDefaults.secondaryChipColors(),
+                            placeholderState = placeholderState,
+                            secondaryLabel = false,
+                        )
+                    }
                 }
             }
         }
@@ -93,7 +111,6 @@ public fun <T> PlaylistsScreen(
 @ExperimentalHorologistApi
 @Composable
 public fun PlaylistsScreen(
-    columnState: ScalingLazyColumnState,
     playlistsScreenState: PlaylistsScreenState<PlaylistUiModel>,
     onPlaylistItemClick: (PlaylistUiModel) -> Unit,
     modifier: Modifier = Modifier,
@@ -110,7 +127,6 @@ public fun PlaylistsScreen(
     }
 
     PlaylistsScreen(
-        columnState = columnState,
         playlistsScreenState = playlistsScreenState,
         playlistContent = playlistContent,
         modifier = modifier,

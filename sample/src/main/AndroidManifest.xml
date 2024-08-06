@@ -32,7 +32,7 @@
         android:theme="@android:style/ThemeOverlay.Material.Dark">
         <uses-library
             android:name="com.google.android.wearable"
-            android:required="true" />
+            android:required="false" />
 
         <meta-data
             android:name="com.google.android.wearable.standalone"
@@ -72,6 +72,40 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.google.android.horologist.scratch.DialogActivity"
+            android:exported="true"
+            android:label="Dialog Sample"
+            android:taskAffinity=".dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.google.android.horologist.scratch.PickerActivity"
+            android:exported="true"
+            android:label="Pickers Sample"
+            android:taskAffinity=".picker">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.google.android.horologist.audit.AuditActivity"
+            android:exported="true"
+            android:label="Large Screen Audit"
+            android:icon="@drawable/audit_24"
+            android:taskAffinity=".audit">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".tiles.ExampleTileService"
             android:description="@string/tile_description"
@@ -86,22 +120,6 @@
             <meta-data
                 android:name="androidx.wear.tiles.PREVIEW"
                 android:resource="@drawable/example_tile" />
-        </service>
-
-        <service
-            android:name="com.google.android.horologist.tile.SampleTileService"
-            android:description="@string/sample_tile_description"
-            android:exported="true"
-            android:icon="@drawable/ic_person"
-            android:label="@string/tile_sample_label"
-            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
-            <intent-filter>
-                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="androidx.wear.tiles.PREVIEW"
-                android:resource="@drawable/sample_tile" />
         </service>
     </application>
 

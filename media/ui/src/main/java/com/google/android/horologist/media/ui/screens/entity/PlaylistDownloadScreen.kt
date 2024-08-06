@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -55,7 +54,6 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.ProgressIndicatorDefaults
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.material.Button
 import com.google.android.horologist.compose.material.ButtonSize
 import com.google.android.horologist.compose.material.Chip
@@ -75,7 +73,6 @@ import com.google.android.horologist.media.ui.util.ifNan
 @ExperimentalHorologistApi
 @Composable
 public fun PlaylistDownloadScreen(
-    columnState: ScalingLazyColumnState,
     playlistName: String,
     playlistDownloadScreenState: PlaylistDownloadScreenState<PlaylistUiModel, DownloadMediaUiModel>,
     onDownloadButtonClick: (PlaylistUiModel) -> Unit,
@@ -101,7 +98,6 @@ public fun PlaylistDownloadScreen(
         }
 
     EntityScreen(
-        columnState = columnState,
         entityScreenState = entityScreenState,
         headerContent = { DefaultEntityScreenHeader(title = playlistName) },
         loadingContent = { items(count = 2) { PlaceholderChip(colors = ChipDefaults.secondaryChipColors()) } },
@@ -181,7 +177,10 @@ private fun MediaContent(
                 label = mediaTitle,
                 onClick = { onDownloadItemClick(downloadMediaUiModel) },
                 secondaryLabel = secondaryLabel,
-                icon = CoilPaintable(downloadMediaUiModel.artworkUri, downloadItemArtworkPlaceholder),
+                icon = CoilPaintable(
+                    downloadMediaUiModel.artworkUri,
+                    downloadItemArtworkPlaceholder,
+                ),
                 largeIcon = true,
                 colors = ChipDefaults.secondaryChipColors(),
                 enabled = downloadMediaUiModel !is DownloadMediaUiModel.NotDownloaded,
@@ -201,7 +200,10 @@ private fun MediaContent(
                             ChipIconWithProgress(
                                 progress = progress,
                                 modifier = Modifier.clearAndSetSemantics { },
-                                icon = CoilPaintable(downloadMediaUiModel.artworkUri, downloadItemArtworkPlaceholder),
+                                icon = CoilPaintable(
+                                    downloadMediaUiModel.artworkUri,
+                                    downloadItemArtworkPlaceholder,
+                                ),
                                 largeIcon = true,
                             )
                         }
@@ -211,21 +213,18 @@ private fun MediaContent(
                         {
                             ChipIconWithProgress(
                                 modifier = Modifier.clearAndSetSemantics { },
-                                icon = CoilPaintable(downloadMediaUiModel.artworkUri, downloadItemArtworkPlaceholder),
+                                icon = CoilPaintable(
+                                    downloadMediaUiModel.artworkUri,
+                                    downloadItemArtworkPlaceholder,
+                                ),
                                 largeIcon = true,
                             )
                         }
                     }
                 }
 
-            val customContentDescription = stringResource(
-                id = R.string.horologist_playlist_download_media_chip_download_content_description,
-                mediaTitle,
-            )
             val customModifier = onDownloadItemInProgressClickActionLabel?.let {
                 Modifier.semantics {
-                    contentDescription = customContentDescription
-
                     onClick(
                         label = onDownloadItemInProgressClickActionLabel,
                         action = null,

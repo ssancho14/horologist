@@ -27,19 +27,27 @@ import androidx.navigation.NavHostController
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.ItemType
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.mediasample.R
-import com.google.android.horologist.mediasample.ui.navigation.navigateToAudioDebug
-import com.google.android.horologist.mediasample.ui.navigation.navigateToSamples
+import com.google.android.horologist.mediasample.ui.navigation.UampNavigationScreen.AudioDebug
+import com.google.android.horologist.mediasample.ui.navigation.UampNavigationScreen.Samples
 
 @Composable
 fun DeveloperOptionsScreen(
-    columnState: ScalingLazyColumnState,
     developerOptionsScreenViewModel: DeveloperOptionsScreenViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
     val uiState by developerOptionsScreenViewModel.uiState.collectAsStateWithLifecycle()
+
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ItemType.Text,
+            last = ItemType.Chip,
+        ),
+    )
 
     ScalingLazyColumn(
         columnState = columnState,
@@ -65,14 +73,14 @@ fun DeveloperOptionsScreen(
             ActionSetting(
                 stringResource(id = R.string.sample_audio_debug),
             ) {
-                navController.navigateToAudioDebug()
+                navController.navigate(AudioDebug)
             }
         }
         item {
             ActionSetting(
                 stringResource(id = R.string.sample_samples),
             ) {
-                navController.navigateToSamples()
+                navController.navigate(Samples)
             }
         }
         item {

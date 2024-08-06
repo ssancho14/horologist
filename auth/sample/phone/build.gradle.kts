@@ -17,6 +17,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("plugin.serialization")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -25,8 +27,8 @@ android {
     defaultConfig {
         applicationId = "com.google.android.horologist.auth.sample"
 
-        minSdk = 23
-        targetSdk = 33
+        minSdk = 21
+        targetSdk = 34
 
         versionCode = 1
         versionName = "1.0"
@@ -59,27 +61,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
-    }
-
-    buildFeatures {
-        compose = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
 
         // Allow for widescale experimental APIs in Alpha libraries we build upon
         freeCompilerArgs = freeCompilerArgs +
             listOf(
                 "-opt-in=com.google.android.horologist.annotations.ExperimentalHorologistApi",
             )
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     packaging {
@@ -111,8 +104,8 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.playservices.wearable)
     implementation(libs.androidx.lifecycle.service)
-
-    coreLibraryDesugaring(libs.android.desugar)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.core)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

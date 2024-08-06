@@ -17,25 +17,21 @@
 package com.google.android.horologist.composables
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import org.junit.Test
 
 class SegmentedProgressIndicatorTest :
-    ScreenshotBaseTest(
-        ScreenshotTestRule.screenshotTestRuleParams {
-            screenTimeText = {}
-        },
-    ) {
+    WearLegacyScreenTest() {
 
     @Test
     fun segmentedPicker() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             val segments = listOf(
                 ProgressIndicatorSegment(1f, Color.Green),
                 ProgressIndicatorSegment(1f, Color.Cyan),
@@ -62,7 +58,7 @@ class SegmentedProgressIndicatorTest :
 
     @Test
     fun segmentedPickerWithBrushColors() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             val segments = listOf(
                 ProgressIndicatorSegment(
                     1f,
@@ -95,7 +91,7 @@ class SegmentedProgressIndicatorTest :
 
     @Test
     fun segmentedPickerWithBrushColorsAndColorsCombined() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             val segments = listOf(
                 ProgressIndicatorSegment(
                     1f,
@@ -122,5 +118,10 @@ class SegmentedProgressIndicatorTest :
                 trackColor = Color.Gray,
             )
         }
+    }
+
+    @Composable
+    override fun TestScaffold(content: @Composable () -> Unit) {
+        content()
     }
 }

@@ -21,18 +21,14 @@ import com.google.accompanist.testharness.TestHarness
 import com.google.android.horologist.health.composables.model.MetricUiModel
 import com.google.android.horologist.health.composables.theme.HR_HARD
 import com.google.android.horologist.health.composables.theme.HR_MAXIMUM
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import org.junit.Test
 import org.robolectric.annotation.Config
 
-class MetricsScreenTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-    },
-) {
+class MetricsScreenTest : WearLegacyScreenTest() {
     @Test
     fun metricsScreenOneMetric() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             MetricsScreen(
                 firstMetric = MetricUiModel(
                     text = "21:34",
@@ -49,7 +45,7 @@ class MetricsScreenTest : ScreenshotBaseTest(
 
     @Test
     fun metricsScreenTwoMetrics() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             MetricsScreen(
                 firstMetric = MetricUiModel(
                     text = "21:34",
@@ -70,7 +66,7 @@ class MetricsScreenTest : ScreenshotBaseTest(
 
     @Test
     fun metricsScreenThreeMetrics() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             MetricsScreen(
                 firstMetric = MetricUiModel(
                     text = "164",
@@ -96,7 +92,7 @@ class MetricsScreenTest : ScreenshotBaseTest(
 
     @Test
     fun metricsScreenFourMetrics() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             MetricsScreen(
                 firstMetric = MetricUiModel(
                     text = "198",
@@ -126,7 +122,7 @@ class MetricsScreenTest : ScreenshotBaseTest(
 
     @Test
     fun metricsScreenMetricsSkipped() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest {
             MetricsScreen(
                 firstMetric = MetricUiModel(
                     text = "198",
@@ -147,12 +143,11 @@ class MetricsScreenTest : ScreenshotBaseTest(
     }
 
     @Config(
-        sdk = [30],
         qualifiers = largeScreen,
     )
     @Test
     fun metricsScreenFourMetrics_largeScreen_smallestFont() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest(applyDeviceConfig = false) {
             TestHarness(fontScale = smallestFontScale) {
                 MetricsScreen(
                     firstMetric = MetricUiModel(
@@ -183,12 +178,11 @@ class MetricsScreenTest : ScreenshotBaseTest(
     }
 
     @Config(
-        sdk = [30],
         qualifiers = smallScreen,
     )
     @Test
     fun metricsScreenFourMetrics_smallScreen_largestFont() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runTest(applyDeviceConfig = false) {
             TestHarness(fontScale = largestFontScale) {
                 MetricsScreen(
                     firstMetric = MetricUiModel(

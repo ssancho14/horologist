@@ -22,6 +22,7 @@ plugins {
     id("com.google.protobuf")
     id("dagger.hilt.android.plugin")
     kotlin("android")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -31,7 +32,7 @@ android {
         applicationId = "com.google.android.horologist.datalayer.sample"
         // Min because of Tiles
         minSdk = 26
-        targetSdk = 30
+        targetSdk = 34
 
         versionCode = 1
         versionName = "1.0"
@@ -59,18 +60,16 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
-        compose = true
         buildConfig = true
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
 
         // Allow for widescale experimental APIs in Alpha libraries we build upon
         freeCompilerArgs = freeCompilerArgs +
@@ -79,15 +78,16 @@ android {
             )
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
-
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
         }
         animationsDisabled = true
+    }
+
+    lint {
+        // https://buganizer.corp.google.com/issues/328279054
+        disable.add("UnsafeOptInUsageError")
     }
 
     namespace = "com.google.android.horologist.datalayer.sample"
@@ -108,7 +108,7 @@ sourceSets {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.25.2"
+        artifact = "com.google.protobuf:protoc:4.27.3"
     }
     plugins {
         id("javalite") {
@@ -139,6 +139,8 @@ dependencies {
     implementation(projects.datalayer.grpc)
     implementation(projects.datalayer.sample.shared)
     implementation(projects.datalayer.watch)
+    implementation(projects.tiles)
+    implementation(libs.androidx.wear.protolayout.material)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.complications.data)
@@ -161,12 +163,12 @@ dependencies {
     implementation(libs.androidx.wear.tooling.preview)
     debugImplementation(projects.composeTools)
     releaseCompileOnly(projects.composeTools)
+    debugImplementation(libs.androidx.wear.tiles.tooling.preview)
+    implementation(libs.androidx.wear.tiles.tooling)
 
     implementation(libs.dagger.hiltandroid)
     ksp(libs.dagger.hiltandroidcompiler)
     implementation(libs.hilt.navigationcompose)
-
-    coreLibraryDesugaring(libs.android.desugar)
 
     testImplementation(libs.androidx.navigation.testing)
     testImplementation(libs.androidx.test.espressocore)
@@ -179,5 +181,5 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
 }
 
-tasks.maybeCreate("prepareKotlinIdeaImport")
-    .dependsOn("generateDebugProto")
+// tasks.maybeCreate("prepareKotlinIdeaImport")
+//    .dependsOn("generateDebugProto")

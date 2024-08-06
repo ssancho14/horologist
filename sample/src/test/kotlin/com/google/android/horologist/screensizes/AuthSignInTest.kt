@@ -22,10 +22,9 @@ import com.google.android.horologist.auth.composables.chips.GuestModeChip
 import com.google.android.horologist.auth.composables.chips.SignInChip
 import com.google.android.horologist.auth.ui.common.screens.prompt.SignInPromptScreen
 import com.google.android.horologist.auth.ui.common.screens.prompt.SignInPromptScreenState
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.tools.Device
 
-class AuthSignInTest(device: Device) : ScreenSizeTest(device = device, showTimeText = false) {
+class AuthSignInTest(device: Device) : WearLegacyScreenSizeTest(device = device, showTimeText = false) {
 
     @Composable
     override fun Content() {
@@ -35,7 +34,6 @@ class AuthSignInTest(device: Device) : ScreenSizeTest(device = device, showTimeT
             message = "Send messages and create chat groups with your friends",
             onIdleStateObserved = { },
             onAlreadySignedIn = { },
-            columnState = ScalingLazyColumnDefaults.responsive().create(),
         ) {
             item {
                 SignInChip(

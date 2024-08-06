@@ -40,6 +40,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.semantics.focused
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -100,9 +102,10 @@ public fun MarqueeText(
         inlineContent = inlineContent,
         modifier = modifier
             .then(controller.outsideMarqueeModifier)
+            .semantics { focused = true }
             .basicMarquee(
                 iterations = Int.MAX_VALUE,
-                delayMillis = pauseTime.inWholeMilliseconds.toInt(),
+                repeatDelayMillis = pauseTime.inWholeMilliseconds.toInt(),
                 initialDelayMillis = pauseTime.inWholeMilliseconds.toInt(),
                 spacing = MarqueeSpacing(followGap),
                 velocity = marqueeDpPerSecond,

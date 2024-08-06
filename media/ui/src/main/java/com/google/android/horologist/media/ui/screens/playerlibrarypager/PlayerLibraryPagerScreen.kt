@@ -23,15 +23,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.toRoute
 import com.google.android.horologist.audio.ui.VolumePositionIndicator
 import com.google.android.horologist.audio.ui.VolumeUiState
 import com.google.android.horologist.compose.layout.ScreenScaffold
-import com.google.android.horologist.compose.layout.belowTimeTextPreview
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.pager.PagerScreen
-import com.google.android.horologist.media.ui.navigation.NavigationScreens
+import com.google.android.horologist.media.ui.navigation.NavigationScreen
 import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.CancellationException
 
@@ -49,17 +54,19 @@ public fun PlayerLibraryPagerScreen(
     backStack: NavBackStackEntry,
     modifier: Modifier = Modifier,
 ) {
-    val pageParam = NavigationScreens.Player.getPageParam(backStack, remove = true)
+    val route = backStack.toRoute<NavigationScreen.Player>()
+    var pageApplied by rememberSaveable(backStack) { mutableStateOf(false) }
 
-    LaunchedEffect(pageParam) {
-        if (pageParam != null) {
+    LaunchedEffect(route.page) {
+        if (route.page != -1 && !pageApplied) {
             try {
-                pagerState.animateScrollToPage(pageParam)
+                pagerState.animateScrollToPage(route.page)
             } catch (e: CancellationException) {
                 // Not sure why we get a cancellation here, but we want the page
                 // nav to take effect and persist
-                pagerState.scrollToPage(pageParam)
+                pagerState.scrollToPage(route.page)
             }
+            pageApplied = true
         }
     }
 
@@ -79,7 +86,7 @@ public fun PlayerLibraryPagerScreen(
             }
 
             1 -> {
-                val config = belowTimeTextPreview()
+                val config = rememberResponsiveColumnState()
                 ScreenScaffold(
                     scrollState = config,
                 ) {

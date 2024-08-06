@@ -14,78 +14,80 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationApi::class)
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalCoilApi::class)
 
 package com.google.android.horologist.screensizes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.wear.compose.material.PositionIndicator
-import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.compose.layout.scrollAway
+import coil.annotation.ExperimentalCoilApi
+import coil.test.FakeImageLoaderEngine
+import com.google.android.horologist.compose.layout.AppScaffold
 import com.google.android.horologist.compose.pager.PagerScreen
 import com.google.android.horologist.compose.tools.Device
 import com.google.android.horologist.images.base.util.rememberVectorPainter
+import com.google.android.horologist.images.coil.FakeImageLoader.Companion.TestIconResourceUri
 import com.google.android.horologist.media.ui.screens.entity.PlaylistDownloadScreen
 import com.google.android.horologist.media.ui.screens.entity.createPlaylistDownloadScreenStateLoaded
 import com.google.android.horologist.media.ui.state.model.DownloadMediaUiModel
 import com.google.android.horologist.media.ui.state.model.PlaylistUiModel
 import com.google.android.horologist.screenshots.FixedTimeSource
+import kotlinx.coroutines.awaitCancellation
 
-class MediaPlayerLibraryTest(device: Device) : ScreenSizeTest(device = device, showTimeText = false) {
+class MediaPlayerLibraryTest(device: Device) :
+    WearLegacyScreenSizeTest(device = device, showTimeText = false) {
 
-    @Composable
-    override fun Content() {
-        val playlistUiModel = PlaylistUiModel(
-            id = "id",
-            title = "Playlist name",
-        )
+        override val imageLoader = FakeImageLoaderEngine.Builder()
+            .intercept(
+                predicate = {
+                    it == TestIconResourceUri
+                },
+                interceptor = {
+                    awaitCancellation()
+                },
+            )
+            .build()
 
-        val notDownloaded = listOf(
-            DownloadMediaUiModel.NotDownloaded(
+        @Composable
+        override fun Content() {
+            val playlistUiModel = PlaylistUiModel(
                 id = "id",
-                title = "Song name",
-                artist = "Artist name",
-                artworkUri = "artworkUri",
-            ),
-            DownloadMediaUiModel.NotDownloaded(
-                id = "id 2",
-                title = "Song name 2",
-                artist = "Artist name 2",
-                artworkUri = "artworkUri",
-            ),
-        )
+                title = "Playlist name",
+            )
 
-        val columnState = ScalingLazyColumnDefaults.responsive().create()
-        PagerScreen(
-            state = rememberPagerState(1) {
-                2
-            },
-        ) {
-            if (it == 1) {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    timeText = {
-                        TimeText(
-                            modifier = Modifier.scrollAway(columnState),
-                            timeSource = FixedTimeSource,
-                        )
-                    },
-                    positionIndicator = {
-                        PositionIndicator(columnState.state)
+            val notDownloaded = listOf(
+                DownloadMediaUiModel.NotDownloaded(
+                    id = "id",
+                    title = "Song name",
+                    artist = "Artist name",
+                    artworkUri = TestIconResourceUri,
+                ),
+                DownloadMediaUiModel.NotDownloaded(
+                    id = "id 2",
+                    title = "Song name 2",
+                    artist = "Artist name 2",
+                    artworkUri = TestIconResourceUri,
+                ),
+            )
+
+            AppScaffold(
+                timeText = {
+                    TimeText(
+                        timeSource = FixedTimeSource,
+                    )
+                },
+            ) {
+                PagerScreen(
+                    state = rememberPagerState(1) {
+                        2
                     },
                 ) {
-                    Box(modifier = Modifier.background(Color.Black)) {
+                    if (it == 1) {
                         PlaylistDownloadScreen(
                             playlistName = "Playlist name",
                             playlistDownloadScreenState = createPlaylistDownloadScreenStateLoaded(
@@ -98,7 +100,6 @@ class MediaPlayerLibraryTest(device: Device) : ScreenSizeTest(device = device, s
                             onDownloadItemInProgressClick = { },
                             onShuffleButtonClick = { },
                             onPlayButtonClick = { },
-                            columnState = columnState,
                             downloadItemArtworkPlaceholder = rememberVectorPainter(
                                 image = Icons.Default.MusicNote,
                                 tintColor = Color.Blue,
@@ -110,4 +111,3 @@ class MediaPlayerLibraryTest(device: Device) : ScreenSizeTest(device = device, s
             }
         }
     }
-}

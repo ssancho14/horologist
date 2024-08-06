@@ -35,11 +35,16 @@ import com.google.android.horologist.composables.DatePicker
 import com.google.android.horologist.composables.TimePicker
 import com.google.android.horologist.composables.TimePickerWith12HourClock
 import com.google.android.horologist.compose.layout.AppScaffold
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
 import com.google.android.horologist.compose.layout.ScalingLazyColumnState.RotaryMode
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberColumnState
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.materialcomponents.SampleAlertDialog
+import com.google.android.horologist.materialcomponents.SampleAnimatedComponents
 import com.google.android.horologist.materialcomponents.SampleButtonScreen
+import com.google.android.horologist.materialcomponents.SampleCardScreen
 import com.google.android.horologist.materialcomponents.SampleChipIconWithProgressScreen
 import com.google.android.horologist.materialcomponents.SampleChipScreen
 import com.google.android.horologist.materialcomponents.SampleCompactChipScreen
@@ -85,26 +90,15 @@ fun SampleWearApp() {
             composable(
                 route = Screen.Menu.route,
             ) {
-                val columnState = rememberColumnState()
-
-                ScreenScaffold(scrollState = columnState) {
-                    MenuScreen(
-                        navigateToRoute = { route -> navController.navigate(route) },
-                        time = time,
-                        columnState = columnState,
-                    )
-                }
+                MenuScreen(
+                    navigateToRoute = { route -> navController.navigate(route) },
+                    time = time,
+                )
             }
             composable(
                 Screen.Network.route,
             ) {
-                val columnState = rememberColumnState()
-
-                ScreenScaffold(scrollState = columnState) {
-                    NetworkScreen(
-                        columnState = columnState,
-                    )
-                }
+                NetworkScreen()
             }
             composable(Screen.FillMaxRectangle.route) {
                 FillMaxRectangleScreen()
@@ -123,7 +117,12 @@ fun SampleWearApp() {
             composable(
                 Screen.ScrollAwaySLC.route,
             ) {
-                val columnState = rememberColumnState()
+                val columnState = rememberResponsiveColumnState(
+                    contentPadding = padding(
+                        first = ScalingLazyColumnDefaults.ItemType.Card,
+                        last = ScalingLazyColumnDefaults.ItemType.Card,
+                    ),
+                )
 
                 ScreenScaffold(scrollState = columnState) {
                     ScrollAwayScreenScalingLazyColumn(
@@ -203,10 +202,15 @@ fun SampleWearApp() {
             composable(
                 route = Screen.MaterialAlertDialog.route,
             ) {
+                SampleAlertDialog()
+            }
+            composable(
+                route = Screen.MaterialAnimatedComponents.route,
+            ) {
                 val columnState = rememberColumnState()
 
                 ScreenScaffold(timeText = {}, scrollState = columnState) {
-                    SampleAlertDialog(columnState = columnState)
+                    SampleAnimatedComponents(columnState = columnState)
                 }
             }
             composable(
@@ -216,6 +220,15 @@ fun SampleWearApp() {
 
                 ScreenScaffold(scrollState = columnState) {
                     SampleButtonScreen(columnState = columnState)
+                }
+            }
+            composable(
+                route = Screen.MaterialCardsScreen.route,
+            ) {
+                val columnState = rememberColumnState()
+
+                ScreenScaffold(scrollState = columnState) {
+                    SampleCardScreen(columnState = columnState)
                 }
             }
             composable(

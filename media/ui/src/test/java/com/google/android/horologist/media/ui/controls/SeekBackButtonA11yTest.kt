@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.google.android.horologist.media.ui.controls
 
 import androidx.compose.foundation.layout.Box
@@ -22,20 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.google.android.horologist.media.ui.components.controls.SeekBackButton
 import com.google.android.horologist.media.ui.components.controls.SeekButtonIncrement
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule
+import com.google.android.horologist.screenshots.rng.WearLegacyA11yTest
 import org.junit.Test
 
-class SeekBackButtonA11yTest : ScreenshotBaseTest(
-    ScreenshotTestRule.screenshotTestRuleParams {
-        enableA11y = true
-        screenTimeText = {}
-    },
-) {
+class SeekBackButtonA11yTest : WearLegacyA11yTest() {
 
     @Test
     fun incrementIsFive() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runComponentTest {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 SeekBackButton(
                     onClick = {},
@@ -47,7 +43,7 @@ class SeekBackButtonA11yTest : ScreenshotBaseTest(
 
     @Test
     fun incrementIsTen() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runComponentTest {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 SeekBackButton(
                     onClick = {},
@@ -59,7 +55,7 @@ class SeekBackButtonA11yTest : ScreenshotBaseTest(
 
     @Test
     fun incrementIsThirty() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runComponentTest {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 SeekBackButton(
                     onClick = {},
@@ -71,7 +67,7 @@ class SeekBackButtonA11yTest : ScreenshotBaseTest(
 
     @Test
     fun incrementIsOther() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runComponentTest {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 SeekBackButton(
                     onClick = {},
@@ -83,7 +79,7 @@ class SeekBackButtonA11yTest : ScreenshotBaseTest(
 
     @Test
     fun incrementIsUnknown() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
+        runComponentTest {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 SeekBackButton(
                     onClick = {},

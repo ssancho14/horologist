@@ -16,57 +16,43 @@
 
 package com.google.android.horologist.health.composables.components
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.LayoutDirection
-import com.google.accompanist.testharness.TestHarness
+import androidx.compose.ui.res.stringResource
+import com.google.android.horologist.health.composables.R
 import com.google.android.horologist.health.composables.model.MetricUiModel
 import com.google.android.horologist.health.composables.theme.HR_HARD
 import com.google.android.horologist.health.composables.theme.HR_MODERATE
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.screenshots.rng.WearLegacyA11yTest
 import org.junit.Test
+import org.robolectric.annotation.Config
 
-class MetricDisplayA11yTest : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        enableA11y = true
-        screenTimeText = {}
-    },
-) {
+class MetricDisplayA11yTest : WearLegacyA11yTest() {
 
     @Test
     fun metricDisplay() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                MetricDisplay(
-                    metric = MetricUiModel(
-                        text = "139",
-                        topRightText = "Vigorous",
-                        bottomRightText = "bpm",
-                        color = HR_MODERATE,
-                    ),
-                )
-            }
+        runComponentTest {
+            MetricDisplay(
+                metric = MetricUiModel(
+                    text = "139",
+                    topRightText = stringResource(R.string.horologist_vigorous),
+                    bottomRightText = stringResource(R.string.horologist_bpm),
+                    color = HR_MODERATE,
+                ),
+            )
         }
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun rtl() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    MetricDisplay(
-                        metric = MetricUiModel(
-                            text = "139",
-                            topRightText = "Vigorous",
-                            bottomRightText = "bpm",
-                            color = HR_HARD,
-                        ),
-                    )
-                }
-            }
+        runComponentTest {
+            MetricDisplay(
+                metric = MetricUiModel(
+                    text = "139",
+                    topRightText = stringResource(R.string.horologist_vigorous),
+                    bottomRightText = stringResource(R.string.horologist_bpm),
+                    color = HR_HARD,
+                ),
+            )
         }
     }
 }

@@ -16,14 +16,15 @@
 
 package com.google.android.horologist.media.ui.screens.entity
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.ItemType
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScreenScaffold
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.Title
 
 /**
@@ -32,28 +33,36 @@ import com.google.android.horologist.compose.material.Title
 @ExperimentalHorologistApi
 @Composable
 public fun EntityScreen(
-    columnState: ScalingLazyColumnState,
     headerContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     buttonsContent: (@Composable () -> Unit)? = null,
     content: (ScalingLazyListScope.() -> Unit)? = null,
 ) {
-    ScalingLazyColumn(
-        columnState = columnState,
-        modifier = modifier,
-    ) {
-        item {
-            headerContent()
-        }
+    val columnState = rememberResponsiveColumnState(
+        contentPadding = padding(
+            first = ItemType.Text,
+            last = ItemType.Chip,
+        ),
+    )
 
-        buttonsContent?.let {
+    ScreenScaffold(scrollState = columnState) {
+        ScalingLazyColumn(
+            columnState = columnState,
+            modifier = modifier,
+        ) {
             item {
-                buttonsContent()
+                headerContent()
             }
-        }
 
-        content?.let {
-            content()
+            buttonsContent?.let {
+                item {
+                    buttonsContent()
+                }
+            }
+
+            content?.let {
+                content()
+            }
         }
     }
 }
@@ -64,7 +73,6 @@ public fun EntityScreen(
 @ExperimentalHorologistApi
 @Composable
 public fun <Media> EntityScreen(
-    columnState: ScalingLazyColumnState,
     headerContent: @Composable () -> Unit,
     mediaList: List<Media>,
     mediaContent: @Composable (media: Media) -> Unit,
@@ -73,7 +81,6 @@ public fun <Media> EntityScreen(
 ) {
     EntityScreen(
         headerContent = headerContent,
-        columnState = columnState,
         modifier = modifier,
         buttonsContent = buttonsContent,
         content = {
@@ -91,7 +98,6 @@ public fun <Media> EntityScreen(
 @ExperimentalHorologistApi
 @Composable
 public fun <Media> EntityScreen(
-    columnState: ScalingLazyColumnState,
     entityScreenState: EntityScreenState<Media>,
     headerContent: @Composable () -> Unit,
     loadingContent: ScalingLazyListScope.() -> Unit,
@@ -104,7 +110,6 @@ public fun <Media> EntityScreen(
         EntityScreenState.Loading -> {
             EntityScreen(
                 headerContent = headerContent,
-                columnState = columnState,
                 modifier = modifier,
                 buttonsContent = buttonsContent,
                 content = loadingContent,
@@ -113,7 +118,6 @@ public fun <Media> EntityScreen(
 
         is EntityScreenState.Loaded -> {
             EntityScreen(
-                columnState = columnState,
                 headerContent = headerContent,
                 mediaList = entityScreenState.mediaList,
                 mediaContent = mediaContent,
@@ -124,7 +128,6 @@ public fun <Media> EntityScreen(
 
         EntityScreenState.Failed -> {
             EntityScreen(
-                columnState = columnState,
                 headerContent = headerContent,
                 modifier = modifier,
                 buttonsContent = buttonsContent,
@@ -161,5 +164,5 @@ public fun DefaultEntityScreenHeader(
     title: String,
     modifier: Modifier = Modifier,
 ) {
-    Title(title, modifier.padding(bottom = 12.dp))
+    Title(title, modifier)
 }

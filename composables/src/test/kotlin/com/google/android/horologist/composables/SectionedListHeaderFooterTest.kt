@@ -24,11 +24,12 @@ import com.google.android.horologist.composables.SectionedListTest.Companion.Dow
 import com.google.android.horologist.composables.SectionedListTest.Companion.DownloadsHeader
 import com.google.android.horologist.composables.SectionedListTest.Companion.DownloadsLoaded
 import com.google.android.horologist.composables.SectionedListTest.Companion.DownloadsLoading
-import com.google.android.horologist.composables.SectionedListTest.Companion.SectionedListPreview
 import com.google.android.horologist.composables.SectionedListTest.Companion.downloads
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
-import com.google.android.horologist.screenshots.ScreenshotTestRule.Companion.screenshotTestRuleParams
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.ItemType
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScreenScaffold
+import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
+import com.google.android.horologist.screenshots.rng.WearLegacyScreenTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
@@ -38,18 +39,19 @@ class SectionedListHeaderFooterTest(
     private val headerVisibleStatesParam: Section.VisibleStates,
     private val footerVisibleStatesParam: Section.VisibleStates,
     private val sectionStateParam: Section.State<String>,
-) : ScreenshotBaseTest(
-    screenshotTestRuleParams {
-        screenTimeText = {}
-    },
-) {
+) : WearLegacyScreenTest() {
 
     @Test
     fun test() {
-        screenshotTestRule.setContent(takeScreenshot = true) {
-            val columnState = ScalingLazyColumnDefaults.responsive().create()
+        runTest {
+            val columnState = rememberResponsiveColumnState(
+                contentPadding = padding(
+                    first = if (headerVisibleStatesParam == ALL_STATES) ItemType.Text else ItemType.Chip,
+                    last = ItemType.Chip,
+                ),
+            )
 
-            SectionedListPreview(columnState) {
+            ScreenScaffold(scrollState = columnState) {
                 SectionedList(columnState = columnState) {
                     section(state = sectionStateParam) {
                         header(visibleStates = headerVisibleStatesParam) { DownloadsHeader() }

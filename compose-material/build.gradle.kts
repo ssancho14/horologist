@@ -20,35 +20,43 @@ plugins {
     id("me.tylerbwong.gradle.metalava")
     alias(libs.plugins.dependencyAnalysis)
     kotlin("android")
+    alias(libs.plugins.roborazzi)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 25
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildTypes {
+        debug {
+            isPseudoLocalesEnabled = true
+        }
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
         buildConfig = false
-        compose = true
     }
 
     kotlinOptions {
-        jvmTarget = "11"
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=com.google.android.horologist.annotations.ExperimentalHorologistApi"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
+        freeCompilerArgs += listOf(
+            "-opt-in=com.google.android.horologist.annotations.ExperimentalHorologistApi",
+            "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+            "-opt-in=androidx.wear.compose.material.ExperimentalWearMaterialApi",
+        )
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
     packaging {
         resources {
             excludes +=
@@ -82,8 +90,8 @@ android {
 project.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     // Workaround for https://youtrack.jetbrains.com/issue/KT-37652
     if (!this.name.endsWith("TestKotlin") && !this.name.startsWith("compileDebug")) {
-        this.kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
+        compilerOptions {
+            freeCompilerArgs.add("-Xexplicit-api=strict")
         }
     }
 }
@@ -107,11 +115,13 @@ dependencies {
     api(libs.wearcompose.material)
     api(libs.wearcompose.foundation)
 
+    implementation(libs.kotlinx.coroutines.core)
+
     implementation(libs.androidx.annotation)
     implementation(libs.compose.material.iconscore)
     implementation(libs.compose.ui.text)
     implementation(libs.compose.ui.unit)
-    implementation(libs.kotlin.stdlib)
+    implementation(libs.compose.ui.util)
 
     debugApi(projects.composeTools)
     debugApi(libs.wearcompose.tooling)
@@ -121,7 +131,6 @@ dependencies {
     debugRuntimeOnly(libs.compose.ui.tooling)
     debugRuntimeOnly(libs.compose.ui.test.manifest)
 
-    testImplementation(projects.composeTools)
     testImplementation(projects.roboscreenshots)
     testImplementation(libs.accompanist.testharness)
     testImplementation(libs.androidx.core)
@@ -132,6 +141,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.robolectric)
     testRuntimeOnly(libs.compose.ui.test.manifest)
+    testImplementation(projects.images.coil)
 }
 
 dependencyAnalysis {

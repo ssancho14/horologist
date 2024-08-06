@@ -19,28 +19,29 @@ plugins {
     id("org.jetbrains.dokka")
     id("me.tylerbwong.gradle.metalava")
     kotlin("android")
+    alias(libs.plugins.roborazzi)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 25
+        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
         buildConfig = false
-        compose = true
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
         // Allow for widescale experimental APIs in Alpha libraries we build upon
         freeCompilerArgs = freeCompilerArgs +
             """
@@ -51,9 +52,6 @@ android {
             }
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
     packaging {
         resources {
             excludes +=
@@ -74,6 +72,8 @@ android {
     lint {
         checkReleaseBuilds = false
         textReport = true
+        // https://buganizer.corp.google.com/issues/328279054
+        disable.add("UnsafeOptInUsageError")
     }
     namespace = "com.google.android.horologist.compose.layout"
 }
@@ -89,22 +89,20 @@ dependencies {
 
     api(libs.wearcompose.material)
     api(libs.wearcompose.foundation)
-    api(libs.wearcompose.navigation)
 
     api(libs.androidx.lifecycle.runtime.compose)
     api(libs.androidx.paging)
+    api(libs.androidx.wear)
+    api(libs.androidx.navigation.runtime)
+    api(libs.wearcompose.navigation)
 
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.util)
-    implementation(libs.androidx.wear)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.compose.ui.toolingpreview)
 
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.androidx.wear.tooling.preview)
+    implementation(libs.wearcompose.tooling)
 
-    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.toolingpreview)
     debugImplementation(projects.composeTools)
     debugImplementation(libs.androidx.activity.compose)
     debugImplementation(libs.compose.ui.test.manifest)
@@ -112,7 +110,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.truth)
     testImplementation(libs.compose.ui.test.junit4)
-    testImplementation(libs.espresso.core)
+    testImplementation(libs.androidx.test.espressocore)
     testImplementation(libs.robolectric)
     testImplementation(projects.composeTools)
     testImplementation(projects.roboscreenshots)

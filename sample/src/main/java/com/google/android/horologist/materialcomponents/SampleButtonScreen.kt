@@ -39,7 +39,8 @@ internal fun SampleButtonScreen(
             Button(
                 imageVector = Icons.Default.Check,
                 contentDescription = "contentDescription",
-                onClick = { },
+                onClick = { println("Click") },
+                onLongClick = { println("LongClick") },
                 colors = ButtonDefaults.iconButtonColors(),
             )
         }

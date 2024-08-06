@@ -30,12 +30,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 
@@ -68,8 +68,8 @@ android {
 project.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     // Workaround for https://youtrack.jetbrains.com/issue/KT-37652
     if (!this.name.endsWith("TestKotlin") && !this.name.startsWith("compileDebug")) {
-        this.kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
+        compilerOptions {
+            freeCompilerArgs.add("-Xexplicit-api=strict")
         }
     }
 }
@@ -83,13 +83,9 @@ metalava {
 dependencies {
     api(projects.annotations)
 
-    if (project.findProject(":media-lib-session") != null) {
-        api(project(":media-lib-session"))
-    } else {
-        api(libs.androidx.media3.session)
-    }
+    api(libs.androidx.media3.session)
 
-    api(libs.espresso.core)
+    api(libs.androidx.test.espressocore)
     implementation(libs.androidx.test.ext.ktx)
     api(libs.androidx.test.uiautomator)
     implementation(libs.kotlinx.coroutines.android)

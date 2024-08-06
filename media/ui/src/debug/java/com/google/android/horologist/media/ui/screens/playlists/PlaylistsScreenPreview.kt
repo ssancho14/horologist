@@ -21,7 +21,6 @@ import androidx.compose.material.icons.automirrored.filled.FeaturedPlayList
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
-import com.google.android.horologist.compose.layout.belowTimeTextPreview
 import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.media.ui.state.model.PlaylistUiModel
@@ -30,7 +29,6 @@ import com.google.android.horologist.media.ui.state.model.PlaylistUiModel
 @Composable
 fun PlaylistsScreenPreview() {
     PlaylistsScreen(
-        columnState = belowTimeTextPreview(),
         playlistsScreenState = PlaylistsScreenState.Loaded(
             buildList {
                 add(
@@ -61,7 +59,6 @@ fun PlaylistsScreenPreview() {
 @Composable
 fun PlaylistsScreenPreviewLoading() {
     PlaylistsScreen(
-        columnState = belowTimeTextPreview(),
         playlistsScreenState = PlaylistsScreenState.Loading,
         onPlaylistItemClick = { },
     )
@@ -71,7 +68,6 @@ fun PlaylistsScreenPreviewLoading() {
 @Composable
 fun PlaylistsScreenPreviewFailed() {
     PlaylistsScreen(
-        columnState = belowTimeTextPreview(),
         playlistsScreenState = PlaylistsScreenState.Failed,
         onPlaylistItemClick = { },
     )
@@ -81,7 +77,6 @@ fun PlaylistsScreenPreviewFailed() {
 @Composable
 fun PlaylistsScreenPreviewCustomLayout() {
     PlaylistsScreen(
-        columnState = belowTimeTextPreview(),
         playlists = listOf(
             Pair("Rock Classics", "Downloading 73%.."),
             Pair("Pop Punk", "Completed"),

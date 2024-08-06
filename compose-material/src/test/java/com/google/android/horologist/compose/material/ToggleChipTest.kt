@@ -21,21 +21,22 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.materialPath
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.testharness.TestHarness
-import com.google.android.horologist.screenshots.ScreenshotBaseTest
+import com.google.android.horologist.screenshots.rng.WearLegacyComponentTest
 import org.junit.Test
+import org.robolectric.annotation.Config
 
-class ToggleChipTest : ScreenshotBaseTest() {
+class ToggleChipTest : WearLegacyComponentTest() {
 
     @Test
     fun switch() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
             )
         }
@@ -43,11 +44,11 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun radio() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Radio,
             )
         }
@@ -55,11 +56,11 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun checkbox() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Checkbox,
             )
         }
@@ -67,11 +68,11 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun unchecked() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = false,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
             )
         }
@@ -79,24 +80,24 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabel() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
             )
         }
     }
 
     @Test
     fun withIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
                 icon = Icons.Default.Image,
             )
@@ -105,13 +106,13 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.Image,
             )
         }
@@ -119,11 +120,11 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun disabled() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
                 enabled = false,
             )
@@ -132,11 +133,11 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun uncheckedAndDisabled() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = false,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
                 enabled = false,
             )
@@ -145,7 +146,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
@@ -157,7 +158,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = largestFontScale) {
                 ToggleChip(
                     checked = true,
@@ -171,7 +172,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withIconAndLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
@@ -184,7 +185,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withIconAndLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = largestFontScale) {
                 ToggleChip(
                     checked = true,
@@ -199,7 +200,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
@@ -212,7 +213,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withSecondaryLabelAndLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = largestFontScale) {
                 ToggleChip(
                     checked = true,
@@ -227,7 +228,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withIconAndSecondaryLabelAndLongText() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
@@ -241,7 +242,7 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun withIconAndSecondaryLabelAndLongTextAndLargestFontScale() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             TestHarness(fontScale = largestFontScale) {
                 ToggleChip(
                     checked = true,
@@ -257,11 +258,11 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun usingSmallIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
                 icon = Icon12dp,
             )
@@ -270,11 +271,11 @@ class ToggleChipTest : ScreenshotBaseTest() {
 
     @Test
     fun usingLargeIcon() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
                 icon = Icon32dp,
             )
@@ -285,43 +286,42 @@ class ToggleChipTest : ScreenshotBaseTest() {
     // with "defaultRtl" test, as it uses a different icon that is easier to see mirrored.
     @Test
     fun default() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.PlayArrow,
             )
         }
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun defaultRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                ToggleChip(
-                    checked = true,
-                    onCheckedChanged = { },
-                    label = "Primary label",
-                    toggleControl = ToggleChipToggleControl.Switch,
-                    secondaryLabel = "Secondary label",
-                    icon = Icons.Default.PlayArrow,
-                )
-            }
+        runComponentTest {
+            ToggleChip(
+                checked = true,
+                onCheckedChanged = { },
+                label = stringResource(R.string.primary_label),
+                toggleControl = ToggleChipToggleControl.Switch,
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
+                icon = Icons.Default.PlayArrow,
+            )
         }
     }
 
     @Test
     fun mirrored() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
+        runComponentTest {
             ToggleChip(
                 checked = true,
                 onCheckedChanged = { },
-                label = "Primary label",
+                label = stringResource(R.string.primary_label),
                 toggleControl = ToggleChipToggleControl.Switch,
-                secondaryLabel = "Secondary label",
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
                 icon = Icons.Default.PlayArrow,
                 iconRtlMode = IconRtlMode.Mirrored,
             )
@@ -329,19 +329,18 @@ class ToggleChipTest : ScreenshotBaseTest() {
     }
 
     @Test
+    @Config(qualifiers = "+ar-rXB-ldrtl")
     fun mirroredRtl() {
-        screenshotTestRule.setContent(isComponent = true, takeScreenshot = true) {
-            TestHarness(layoutDirection = LayoutDirection.Rtl) {
-                ToggleChip(
-                    checked = true,
-                    onCheckedChanged = { },
-                    label = "Primary label",
-                    toggleControl = ToggleChipToggleControl.Switch,
-                    secondaryLabel = "Secondary label",
-                    icon = Icons.Default.PlayArrow,
-                    iconRtlMode = IconRtlMode.Mirrored,
-                )
-            }
+        runComponentTest {
+            ToggleChip(
+                checked = true,
+                onCheckedChanged = { },
+                label = stringResource(R.string.primary_label),
+                toggleControl = ToggleChipToggleControl.Switch,
+                secondaryLabel = stringResource(com.google.android.horologist.compose.material.R.string.secondary_label),
+                icon = Icons.Default.PlayArrow,
+                iconRtlMode = IconRtlMode.Mirrored,
+            )
         }
     }
 

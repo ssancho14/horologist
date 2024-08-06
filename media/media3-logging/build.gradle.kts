@@ -25,13 +25,13 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 25
+        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -39,7 +39,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
         freeCompilerArgs = freeCompilerArgs +
             listOf(
                 "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
@@ -73,8 +73,8 @@ android {
 project.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     // Workaround for https://youtrack.jetbrains.com/issue/KT-37652
     if (!this.name.endsWith("TestKotlin") && !this.name.startsWith("compileDebug")) {
-        this.kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
+        compilerOptions {
+            freeCompilerArgs.add("-Xexplicit-api=strict")
         }
     }
 }
@@ -91,9 +91,9 @@ dependencies {
     implementation(projects.media.audio)
     implementation(projects.media.core)
     implementation(libs.kotlinx.coroutines.core)
-    api(project.findProject(":media-lib-common") ?: libs.androidx.media3.common)
+    api(libs.androidx.media3.common)
     api(libs.androidx.annotation)
-    api(project.findProject(":media-lib-exoplayer") ?: libs.androidx.media3.exoplayer)
+    api(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.lifecycle.process)
     implementation(libs.kotlinx.coroutines.guava)
     implementation(libs.androidx.corektx)
@@ -105,11 +105,8 @@ dependencies {
     testImplementation(libs.androidx.test.ext.ktx)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.robolectric)
-    testImplementation(project.findProject(":media-test-utils") ?: libs.androidx.media3.testutils)
-    testImplementation(
-        project.findProject(":media-test-utils-robolectric")
-            ?: libs.androidx.media3.testutils.robolectric,
-    )
+    testImplementation(libs.androidx.media3.testutils)
+    testImplementation(libs.androidx.media3.testutils.robolectric)
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {

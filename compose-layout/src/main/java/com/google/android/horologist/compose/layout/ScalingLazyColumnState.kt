@@ -15,12 +15,10 @@
  */
 
 @file:Suppress("ObjectLiteralToLambda")
-@file:OptIn(ExperimentalWearFoundationApi::class)
 
 package com.google.android.horologist.compose.layout
 
 import androidx.compose.foundation.MutatePriority
-import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.ScrollableState
@@ -31,22 +29,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.lazy.AutoCenteringParams
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumnDefaults.snapFlingBehavior
 import androidx.wear.compose.foundation.lazy.ScalingLazyListAnchorType
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.ScalingParams
-import androidx.wear.compose.foundation.rememberActiveFocusRequester
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults.behavior
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults.snapBehavior
+import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
+import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.ItemType
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.responsiveScalingParams
 import com.google.android.horologist.compose.layout.ScalingLazyColumnState.RotaryMode
-import com.google.android.horologist.compose.rotaryinput.rememberDisabledHaptic
-import com.google.android.horologist.compose.rotaryinput.rememberRotaryHapticHandler
-import com.google.android.horologist.compose.rotaryinput.rotaryWithScroll
-import com.google.android.horologist.compose.rotaryinput.rotaryWithSnap
-import com.google.android.horologist.compose.rotaryinput.toRotaryScrollAdapter
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState.ScrollPosition
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumnDefaults as WearScalingLazyColumnDefaults
 
 /**
@@ -56,6 +59,7 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumnDefaults as WearSc
 @ExperimentalHorologistApi
 public class ScalingLazyColumnState(
     public val initialScrollPosition: ScrollPosition = ScrollPosition(1, 0),
+    public val timeTextHomeOffset: ScrollPosition = initialScrollPosition,
     public val autoCentering: AutoCenteringParams? = AutoCenteringParams(
         initialScrollPosition.index,
         initialScrollPosition.offsetPx,
@@ -70,7 +74,6 @@ public class ScalingLazyColumnState(
             alignment = if (!reverseLayout) Alignment.Top else Alignment.Bottom,
         ),
     public val horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    public val flingBehavior: FlingBehavior? = null,
     public val userScrollEnabled: Boolean = true,
     public val scalingParams: ScalingParams = WearScalingLazyColumnDefaults.scalingParams(),
     public val hapticsEnabled: Boolean = true,
@@ -96,6 +99,7 @@ public class ScalingLazyColumnState(
         get() = state.canScrollForward
     override val isScrollInProgress: Boolean
         get() = state.isScrollInProgress
+
     override fun dispatchRawDelta(delta: Float): Float = state.dispatchRawDelta(delta)
 
     override suspend fun scroll(
@@ -108,12 +112,6 @@ public class ScalingLazyColumnState(
     public sealed interface RotaryMode {
         public object Snap : RotaryMode
         public object Scroll : RotaryMode
-
-        @Deprecated(
-            "Use RotaryMode.Scroll instead",
-            replaceWith = ReplaceWith("RotaryMode.Scroll"),
-        )
-        public object Fling : RotaryMode
     }
 
     public data class ScrollPosition(
@@ -127,11 +125,78 @@ public class ScalingLazyColumnState(
     }
 }
 
+// @Deprecated("Replaced by rememberResponsiveColumnState")
 @Composable
 public fun rememberColumnState(
     factory: ScalingLazyColumnState.Factory = ScalingLazyColumnDefaults.responsive(),
 ): ScalingLazyColumnState {
     val columnState = factory.create()
+
+    columnState.state = rememberSaveable(saver = ScalingLazyListState.Saver) {
+        columnState.state
+    }
+
+    return columnState
+}
+
+@Composable
+public fun rememberResponsiveColumnState(
+    contentPadding: @Composable () -> PaddingValues = ScalingLazyColumnDefaults.padding(
+        first = ScalingLazyColumnDefaults.ItemType.Unspecified,
+        last = ScalingLazyColumnDefaults.ItemType.Unspecified,
+    ),
+    verticalArrangement: Arrangement.Vertical =
+        Arrangement.spacedBy(
+            space = 4.dp,
+            alignment = Alignment.Top,
+        ),
+    rotaryMode: RotaryMode? = RotaryMode.Scroll,
+    hapticsEnabled: Boolean = true,
+    reverseLayout: Boolean = false,
+    userScrollEnabled: Boolean = true,
+    initialItemIndex: Int = 0,
+): ScalingLazyColumnState {
+    val density = LocalDensity.current
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp.toFloat()
+    val screenHeightDp = configuration.screenHeightDp.toFloat()
+
+    val scalingParams = responsiveScalingParams(screenWidthDp)
+
+    val contentPaddingCalculated = contentPadding()
+
+    val screenHeightPx =
+        with(density) { screenHeightDp.dp.roundToPx() }
+    val topPaddingPx = with(density) { contentPaddingCalculated.calculateTopPadding().roundToPx() }
+    val topScreenOffsetPx = screenHeightPx / 2 - topPaddingPx
+
+    // Calculate the offset from which TimeText scrollAway should move
+    val timeTextHomeOffset = ScrollPosition(
+        index = 0,
+        offsetPx = topScreenOffsetPx,
+    )
+    val initialScrollPosition = ScrollPosition(
+        index = if (initialItemIndex > 0) initialItemIndex else 0,
+        offsetPx = if (initialItemIndex > 0) 0 else topScreenOffsetPx,
+    )
+
+    // Try to put the top of the first item in the centre, but rely on
+    // ScalingLazyColumn to stick to the ContentPadding.
+
+    val columnState = ScalingLazyColumnState(
+        initialScrollPosition = initialScrollPosition,
+        timeTextHomeOffset = timeTextHomeOffset,
+        autoCentering = null,
+        anchorType = ScalingLazyListAnchorType.ItemStart,
+        rotaryMode = rotaryMode,
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = contentPaddingCalculated,
+        scalingParams = scalingParams,
+        hapticsEnabled = hapticsEnabled,
+        reverseLayout = reverseLayout,
+        userScrollEnabled = userScrollEnabled,
+    )
 
     columnState.state = rememberSaveable(saver = ScalingLazyListState.Saver) {
         columnState.state
@@ -147,45 +212,63 @@ public fun ScalingLazyColumn(
     modifier: Modifier = Modifier,
     content: ScalingLazyListScope.() -> Unit,
 ) {
-    val focusRequester = rememberActiveFocusRequester()
-
-    val rotaryHaptics = if (columnState.hapticsEnabled) {
-        rememberRotaryHapticHandler(columnState.state)
-    } else {
-        rememberDisabledHaptic()
-    }
-
-    @Suppress("DEPRECATION")
-    val modifierWithRotary = when (columnState.rotaryMode) {
-        RotaryMode.Snap -> modifier.rotaryWithSnap(
-            focusRequester = focusRequester,
-            rotaryScrollAdapter = columnState.state.toRotaryScrollAdapter(),
-            reverseDirection = columnState.reverseLayout,
-            rotaryHaptics = rotaryHaptics,
+    val (rotaryBehavior, flingBehavior) = when (columnState.rotaryMode) {
+        RotaryMode.Snap -> Pair(
+            snapBehavior(
+                scrollableState = columnState.state,
+                hapticFeedbackEnabled = columnState.hapticsEnabled,
+            ),
+            snapFlingBehavior(state = columnState.state),
         )
 
-        RotaryMode.Scroll, RotaryMode.Fling -> modifier.rotaryWithScroll(
-            focusRequester = focusRequester,
-            scrollableState = columnState.state,
-            reverseDirection = columnState.reverseLayout,
-            rotaryHaptics = rotaryHaptics,
+        else -> Pair(
+            behavior(
+                scrollableState = columnState.state,
+                hapticFeedbackEnabled = columnState.hapticsEnabled,
+            ),
+            ScrollableDefaults.flingBehavior(),
         )
-
-        else -> modifier
     }
 
     ScalingLazyColumn(
-        modifier = modifierWithRotary.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         state = columnState.state,
         contentPadding = columnState.contentPadding,
         reverseLayout = columnState.reverseLayout,
         verticalArrangement = columnState.verticalArrangement,
         horizontalAlignment = columnState.horizontalAlignment,
-        flingBehavior = columnState.flingBehavior ?: ScrollableDefaults.flingBehavior(),
+        flingBehavior = flingBehavior,
         userScrollEnabled = columnState.userScrollEnabled,
         scalingParams = columnState.scalingParams,
         anchorType = columnState.anchorType,
         autoCentering = columnState.autoCentering,
+        rotaryScrollableBehavior = rotaryBehavior,
         content = content,
     )
+}
+
+@Composable
+@WearPreviewDevices
+@WearPreviewFontScales
+fun previewInitialScrolling() {
+    AppScaffold(
+        timeText = { TimeText() },
+    ) {
+        val columnState = rememberResponsiveColumnState(
+            contentPadding = ScalingLazyColumnDefaults.padding(
+                first = ItemType.Text,
+                last = ItemType.Text,
+            ),
+            initialItemIndex = 50,
+        )
+        ScreenScaffold(scrollState = columnState) {
+            ScalingLazyColumn(
+                columnState = columnState,
+            ) {
+                items(100) {
+                    Text("Item $it")
+                }
+            }
+        }
+    }
 }
