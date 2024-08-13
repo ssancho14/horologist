@@ -3,7 +3,6 @@
 build/
 
 captures
-
 /local.properties
 
 # IntelliJ .idea folder
@@ -53,3 +52,4 @@ out/
 /.idea/shelf
 /.idea/deploymentTargetSelector.xml
 /.idea/appInsightsSettings.xml
+/.kotlin/**/*
